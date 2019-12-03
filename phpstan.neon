@@ -1,0 +1,13 @@
+includes:
+    - vendor/phpstan/phpstan-symfony/extension.neon
+parameters:
+    symfony:
+        container_xml_path: '%rootDir%/../../../var/cache/dev/App_KernelDevDebugContainer.xml'
+    level: 5
+    ignoreErrors:
+        #- '#Method [a-zA-Z0-9\\_]+::[a-zA-Z0-9\\_].*\(.*\) should return .+ but returns object.#'
+        #- '#Call to an undefined method Illuminate\\Contracts\\Auth\\Factory::.+\(\)#'
+        #- '#Access to an undefined property App\\Demo\\[a-zA-Z0-9\\_]+::\$[a-zA-Z0-9\\_]+\.#'
+        #- '#Call to an undefined method App\\Http\\Resources\\DemoResource::DemoMethod\(\)\.#'
+    excludes_analyse:
+        #- /*/*/FileToBeExcluded.php
