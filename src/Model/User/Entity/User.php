@@ -8,6 +8,8 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Swagger\Annotations as SWG;
 
 /**
  * Class User.
@@ -16,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="users", uniqueConstraints={
  *     @ORM\UniqueConstraint(columns={"email"}),
- *     @ORM\UniqueConstraint(columns={"reset_token_token"})
+ *     @ORM\UniqueConstraint(columns={"reset_token"})
  * })
  */
 class User
@@ -28,6 +30,10 @@ class User
     /**
      * @var Id $id Entity id.
      *
+     * @SWG\Property(type="string", example="002d6fbc-16ae-11ea-8d71-362b9e155667", description="Identifier")
+     *
+     * @Groups("user")
+     *
      * @ORM\Column(type="user_id")
      * @ORM\Id
      */
@@ -36,19 +42,29 @@ class User
     /**
      * @var DateTimeImmutable $date Date of user creation.
      *
+     * @SWG\Property(type="datetime", description="Datetime")
+     *
+     * @Groups("user")
+     *
      * @ORM\Column(type="datetime_immutable")
      */
     private $date;
 
     /**
-     * @var Email $email Email.
-     *
      * @ORM\Column(type="user_email", nullable=false)
+     *
+     * @SWG\Property(type="string", example="test@gmail.com", description="Email address.")
+     *
+     * @Groups("user")
+     *
+     * @var Email $email Email.
      */
     private $email;
 
     /**
      * @var string The hashed password.
+     *
+     * @SWG\Property()
      *
      * @ORM\Column(type="string", name="password_hash", nullable=false)
      */
@@ -83,8 +99,13 @@ class User
     private $newEmailToken;
 
     /**
-     * @var Name
+     * @var Name $name Name.
+     *
+     * @SWG\Property(type="string", example="Username", description="Username")
+     *
      * @ORM\Embedded(class="Name")
+     *
+     * @Groups("user")
      */
     private $name;
 
@@ -152,6 +173,7 @@ class User
         $user->email = $email;
         $user->passwordHash = $hash;
         $user->status = self::STATUS_ACTIVE;
+
         return $user;
     }
 

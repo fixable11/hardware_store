@@ -37,7 +37,17 @@ sniff:
 	docker-compose exec php-fpm ./vendor/bin/phpcs --error-severity=1 --warning-severity=8 --colors --report=summary ./src; return 0;
 
 perm:
-	sudo chown ${USER}:${USER} ./ -R
+	sudo chown ${USER}:${USER} ./bin -R
+	sudo chown ${USER}:${USER} ./config -R
+	sudo chown ${USER}:${USER} ./docker -R
+	sudo chown ${USER}:${USER} ./public -R
+	sudo chown ${USER}:${USER} ./src -R
+	sudo chown ${USER}:${USER} ./templates -R
+	sudo chown ${USER}:${USER} ./tests -R
+	sudo chown ${USER}:${USER} ./translations -R
+	sudo chown ${USER}:${USER} ./var -R
+	sudo chown ${USER}:${USER} ./vendor -R
+	sudo chown ${USER}:${USER} ./composer.json -R
 
 bash:
 	docker-compose exec php-fpm bash
@@ -49,7 +59,7 @@ frontend-watch:
 	docker-compose exec node npm run watch
 
 migrations:
-	#docker-compose exec php-fpm php bin/console doctrine:migrations:migrate --no-interaction
+	docker-compose exec php-fpm php bin/console doctrine:migrations:migrate --no-interaction
 
 fixtures:
 	docker-compose exec php-fpm php bin/console doctrine:fixtures:load --no-interaction

@@ -1,12 +1,28 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
-    </body>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <!-- Custom styles for this template -->
+    {% block stylesheets %}
+        {# encore_entry_link_tags('app') #}
+    {% endblock %}
+</head>
+<body class="app header-fixed sidebar-fixed aside-menu-fixed sidebar-lg-show">
+<header class="app-header navbar">
+
+</header>
+<div class="app-body">
+   Hello
+</div>
+<footer class="app-footer">
+    <div>
+        <span>© {{ "now"|date("Y") }} All rights reserved</span>
+    </div>
+</footer>
+{% block javascripts %}
+    {# encore_entry_script_tags('app') #}
+{% endblock %}
+</body>
 </html>
