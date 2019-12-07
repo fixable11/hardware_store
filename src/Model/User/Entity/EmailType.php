@@ -9,6 +9,8 @@ use Doctrine\DBAL\Types\StringType;
 
 /**
  * Class EmailType.
+ *
+ * phpcs:ignoreFile
  */
 class EmailType extends StringType
 {

@@ -6,6 +6,7 @@ namespace App\Model\User\Entity;
 
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
+use DomainException;
 use Exception;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -52,17 +53,20 @@ class User implements UserInterface
     private $date;
 
     /**
+     * @var Email $email Email.
+     *
      * @ORM\Column(type="user_email", nullable=false)
      *
      * @SWG\Property(type="string", example="test@gmail.com", description="Email address.")
      *
      * @Groups("user")
      *
-     * @var Email $email Email.
      */
     private $email;
 
     /**
+     * @var array $roles Roles.
+     *
      * @ORM\Column(type="json")
      */
     private $roles = [];
@@ -84,7 +88,7 @@ class User implements UserInterface
     private $confirmToken;
 
     /**
-     * @var ResetToken $resetToken Token for resetting user's password.
+     * @var ResetToken|null $resetToken Token for resetting user's password.
      *
      * @ORM\Embedded(class="ResetToken", columnPrefix="reset_token_")
      */
@@ -127,17 +131,21 @@ class User implements UserInterface
      *
      * @param ResetToken        $token Reset token.
      * @param DateTimeImmutable $date  Datetime.
+     *
+     * @return void
+     *
+     * @throws DomainException DomainException.
      */
     public function requestPasswordReset(ResetToken $token, DateTimeImmutable $date): void
     {
         if (! $this->isActive()) {
-            throw new \DomainException('User is not active.');
+            throw new DomainException('User is not active.');
         }
-        if (! $this->email) {
-            throw new \DomainException('Email is not specified.');
+        if (! $this->email->getValue()) {
+            throw new DomainException('Email is not specified.');
         }
-        if ($this->resetToken && !$this->resetToken->isExpiredTo($date)) {
-            throw new \DomainException('Resetting is already requested.');
+        if ($this->resetToken->getToken() && ! $this->resetToken->isExpiredTo($date)) {
+            throw new DomainException('Resetting is already requested.');
         }
         $this->resetToken = $token;
     }
@@ -147,25 +155,46 @@ class User implements UserInterface
      *
      * @param DateTimeImmutable $date Datetime.
      * @param string            $hash Password hash.
+     *
+     * @return void
+     *
+     * @throws DomainException DomainException.
      */
     public function passwordReset(DateTimeImmutable $date, string $hash): void
     {
-        if (!$this->resetToken) {
-            throw new \DomainException('Resetting is not requested.');
+        if (! $this->resetToken) {
+            throw new DomainException('Resetting is not requested.');
         }
         if ($this->resetToken->isExpiredTo($date)) {
-            throw new \DomainException('Reset token is expired.');
+            throw new DomainException('Reset token is expired.');
         }
         $this->passwordHash = $hash;
         $this->resetToken = null;
     }
 
+    /**
+     * @param Email $email Email.
+     * @param Name  $name  Name.
+     *
+     * @return void
+     */
     public function edit(Email $email, Name $name): void
     {
         $this->name = $name;
         $this->email = $email;
     }
 
+    /**
+     * Create user.
+     *
+     * @param Id                $id    Id.
+     * @param DateTimeImmutable $date  Date.
+     * @param Name              $name  Name.
+     * @param Email             $email Email.
+     * @param string            $hash  Hash.
+     *
+     * @return static
+     */
     public static function create(Id $id, DateTimeImmutable $date, Name $name, Email $email, string $hash): self
     {
         $user = new self($id, $date, $name);
@@ -176,23 +205,41 @@ class User implements UserInterface
         return $user;
     }
 
-
+    /**
+     * Activate user
+     *
+     * @return void
+     *
+     * @throws DomainException DomainException.
+     */
     public function activate(): void
     {
         if ($this->isActive()) {
-            throw new \DomainException('User is already active.');
+            throw new DomainException('User is already active.');
         }
         $this->status = self::STATUS_ACTIVE;
     }
 
+    /**
+     * Block user.
+     *
+     * @return void
+     *
+     * @throws DomainException DomainException.
+     */
     public function block(): void
     {
         if ($this->isBlocked()) {
-            throw new \DomainException('User is already blocked.');
+            throw new DomainException('User is already blocked.');
         }
         $this->status = self::STATUS_BLOCKED;
     }
 
+    /**
+     * Check if user blocked.
+     *
+     * @return boolean
+     */
     public function isBlocked()
     {
         return $this->status === self::STATUS_BLOCKED;
@@ -202,11 +249,13 @@ class User implements UserInterface
      * Confirm registration.
      *
      * @return void
+     *
+     * @throws DomainException DomainException.
      */
     public function confirmSignUp(): void
     {
-        if (!$this->isWait()) {
-            throw new \DomainException('User is already confirmed.');
+        if (! $this->isWait()) {
+            throw new DomainException('User is already confirmed.');
         }
         $this->status =self::STATUS_ACTIVE;
         $this->confirmToken = null;
@@ -216,6 +265,8 @@ class User implements UserInterface
      * Change user's name.
      *
      * @param Name $name User's name vo.
+     *
+     * @return void
      */
     public function changeName(Name $name): void
     {
@@ -235,7 +286,7 @@ class User implements UserInterface
     /**
      * Checks that user status equals to WAIT
      *
-     * @return bool
+     * @return boolean
      */
     public function isWait(): bool
     {
@@ -245,7 +296,7 @@ class User implements UserInterface
     /**
      * Checks that user status equals to ACTIVE
      *
-     * @return bool
+     * @return boolean
      */
     public function isActive(): bool
     {
@@ -299,6 +350,8 @@ class User implements UserInterface
     }
 
     /**
+     * Get status.
+     *
      * @return string
      */
     public function getStatus(): string
@@ -307,7 +360,9 @@ class User implements UserInterface
     }
 
     /**
-     * @inheritDoc
+     * Returns the roles granted to the user.
+     *
+     * @return array (Role|string)[] The user roles
      */
     public function getRoles(): array
     {
@@ -318,7 +373,12 @@ class User implements UserInterface
     }
 
     /**
-     * @inheritDoc
+     * Returns the password used to authenticate the user.
+     *
+     * This should be the encoded password. On authentication, a plain-text
+     * password will be salted, encoded, and then compared to this value.
+     *
+     * @return string|null The encoded password if any
      */
     public function getPassword()
     {
@@ -326,7 +386,11 @@ class User implements UserInterface
     }
 
     /**
-     * @inheritDoc
+     * Returns the salt that was originally used to encode the password.
+     *
+     * This can return null if the password was not encoded using a salt.
+     *
+     * @return string|null The salt
      */
     public function getSalt()
     {
@@ -334,7 +398,9 @@ class User implements UserInterface
     }
 
     /**
-     * @inheritDoc
+     * Returns the username used to authenticate the user.
+     *
+     * @return string The username
      */
     public function getUsername()
     {
@@ -342,7 +408,12 @@ class User implements UserInterface
     }
 
     /**
-     * @inheritDoc
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     *
+     * @return null
      */
     public function eraseCredentials()
     {

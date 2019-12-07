@@ -85,8 +85,8 @@ class UsersController extends AbstractFOSRestController
      *
      * @return Response
      *
-     * @throws AnnotationException
-     * @throws ExceptionInterface
+     * @throws AnnotationException AnnotationException.
+     * @throws ExceptionInterface ExceptionInterface.
      */
     public function index()
     {
@@ -143,7 +143,7 @@ class UsersController extends AbstractFOSRestController
         $createDto = new CreateDto();
         $form = $this->createForm(CreateForm::class, $createDto);
 
-        $data = json_decode($request->getContent(),true);
+        $data = json_decode($request->getContent(), true);
 
         $form->submit($data);
 
@@ -212,7 +212,7 @@ class UsersController extends AbstractFOSRestController
         $updateDto = UpdateDto::fromUser($user);
         $form = $this->createForm(UpdateForm::class, $updateDto);
 
-        $data = json_decode($request->getContent(),true);
+        $data = json_decode($request->getContent(), true);
 
         $form->submit($data);
 

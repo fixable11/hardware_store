@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\User\Entity;
 
+use InvalidArgumentException;
 use Webmozart\Assert\Assert;
 
 /**
@@ -19,20 +20,24 @@ class Email
     /**
      * Email constructor.
      *
-     * @param string $value
+     * @param string $value Email.
+     *
+     * @throws InvalidArgumentException InvalidArgumentException.
      */
     public function __construct(string $value)
     {
         Assert::notEmpty($value);
 
         if (! filter_var($value, FILTER_VALIDATE_EMAIL)) {
-            throw new \InvalidArgumentException('Incorrect email');
+            throw new InvalidArgumentException('Incorrect email');
         }
 
         $this->value = mb_strtolower($value);
     }
 
     /**
+     * Get value.
+     *
      * @return string
      */
     public function getValue(): string
@@ -41,9 +46,9 @@ class Email
     }
 
     /**
-     * @param Email $other
+     * @param self $other Other email.
      *
-     * @return bool
+     * @return boolean
      */
     public function isEqual(self $other): bool
     {

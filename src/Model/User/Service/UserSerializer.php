@@ -28,16 +28,15 @@ use App\Model\User\UseCase\Create\CreateDto;
  */
 class UserSerializer
 {
-
     /**
      * Serialize.
      *
-     * @param array $users
+     * @param array $users Users array.
      *
      * @return mixed
      *
-     * @throws AnnotationException
-     * @throws ExceptionInterface
+     * @throws AnnotationException AnnotationException.
+     * @throws ExceptionInterface ExceptionInterface.
      */
     public function serialize(array $users)
     {
@@ -60,29 +59,22 @@ class UserSerializer
         return $serializer->normalize($users, 'json', $this->whitelistAttributes());
     }
 
-    public function normalize(array $data)
-    {
-        $converter = new CamelCaseToSnakeCaseNameConverter();
-    }
-
     /**
      * Attributes that will be shown to the client
      *
      * @return array
      */
-    private function whitelistAttributes()
+    private function whitelistAttributes(): array
     {
         return [
             'groups' => 'user',
-//            AbstractNormalizer::ATTRIBUTES => [
-//                'id',
-//                'name'
-//            ]
         ];
     }
 
     /**
      * Creates callbacks context.
+     *
+     * @return array
      */
     private function makeContext(): array
     {

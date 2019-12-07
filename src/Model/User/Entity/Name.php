@@ -30,7 +30,7 @@ class Name
     /**
      * Name constructor.
      *
-     * @param string $firstName First name,
+     * @param string $firstName First name.
      * @param string $lastMame  Last name.
      */
     public function __construct(string $firstName, string $lastMame)
@@ -42,16 +42,31 @@ class Name
         $this->lastMame = $lastMame;
     }
 
+    /**
+     * Get first name.
+     *
+     * @return string
+     */
     public function getFirst(): string
     {
         return $this->firstName;
     }
 
+    /**
+     * Get last name.
+     *
+     * @return string
+     */
     public function getLast(): string
     {
         return $this->lastMame;
     }
 
+    /**
+     * Get full name.
+     *
+     * @return string
+     */
     public function getFull(): string
     {
         return $this->firstName . ' ' . $this->lastMame;

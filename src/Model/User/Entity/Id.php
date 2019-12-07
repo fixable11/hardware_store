@@ -21,7 +21,7 @@ class Id
     /**
      * Id constructor.
      *
-     * @param string $value
+     * @param string $value Id.
      */
     public function __construct(string $value)
     {

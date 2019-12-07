@@ -7,6 +7,11 @@ namespace App\Model\User\Entity;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\GuidType;
 
+/**
+ * Class IdType
+ *
+ * phpcs:ignoreFile
+ */
 class IdType extends GuidType
 {
     public const NAME = 'user_id';

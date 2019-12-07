@@ -10,6 +10,8 @@ use App\Model\User\Entity\Id;
 use App\Model\User\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 
 /**
  * Class UserRepository.
@@ -29,59 +31,110 @@ class UserRepository
     /**
      * UserRepository constructor.
      *
-     * @param EntityManagerInterface $em
+     * @param EntityManagerInterface $em Entity manager.
      */
     public function __construct(EntityManagerInterface $em)
     {
         $this->em = $em;
-        $this->repo = $em->getRepository(User::class);
+        /** @var EntityRepository $repo */
+        $repo = $em->getRepository(User::class);
+        $this->repo =  $repo;
     }
 
     /**
-     * @param string $token
-     * @return User|object|null
+     * Find user by confirm token.
+     *
+     * @param string $token Token.
+     *
+     * @return User|null
      */
     public function findByConfirmToken(string $token): ?User
     {
-        return $this->repo->findOneBy(['confirmToken' => $token]);
+        /** @var User|null $user */
+        $user = $this->repo->findOneBy(['confirmToken' => $token]);
+
+        return $user;
     }
 
     /**
-     * @param string $token
-     * @return User|object|null
+     * Find user by reset token.
+     *
+     * @param string $token Token.
+     *
+     * @return User|null
      */
     public function findByResetToken(string $token): ?User
     {
-        return $this->repo->findOneBy(['resetToken.token' => $token]);
+        /** @var User|null $user */
+        $user = $this->repo->findOneBy(['resetToken.token' => $token]);
+
+        return $user;
     }
 
+    /**
+     * Get user by id.
+     *
+     * @param Id $id Id.
+     *
+     * @return User
+     *
+     * @throws EntityNotFoundException EntityNotFoundException.
+     */
     public function get(Id $id): User
     {
         /** @var User $user */
-        if (!$user = $this->repo->find($id->getValue())) {
+        if (! $user = $this->repo->find($id->getValue())) {
             throw new EntityNotFoundException('User is not found.');
         }
         return $user;
     }
 
-    public function delete(Id $id)
+    /**
+     * Delete user.
+     *
+     * @param Id $id Id.
+     *
+     * @return void
+     *
+     * @throws EntityNotFoundException EntityNotFoundException.
+     */
+    public function delete(Id $id): void
     {
-        if (!$user = $this->repo->find($id->getValue())) {
+        if (! $user = $this->repo->find($id->getValue())) {
             throw new EntityNotFoundException('User is not found.');
         }
 
         $this->em->remove($user);
     }
 
+    /**
+     * Get user by email.
+     *
+     * @param Email $email Email.
+     *
+     * @return User
+     *
+     * @throws EntityNotFoundException EntityNotFoundException.
+     */
     public function getByEmail(Email $email): User
     {
         /** @var User $user */
-        if (!$user = $this->repo->findOneBy(['email' => $email->getValue()])) {
+        if (! $user = $this->repo->findOneBy(['email' => $email->getValue()])) {
             throw new EntityNotFoundException('User is not found.');
         }
         return $user;
     }
 
+    /**
+     * If user exists by Email.
+     *
+     * @param Email $email Email.
+     *
+     * @return boolean
+     *
+     * @throws NoResultException NoResultException.
+     * @throws NonUniqueResultException NonUniqueResultException.
+     */
     public function hasByEmail(Email $email): bool
     {
         return $this->repo->createQueryBuilder('t')
@@ -91,23 +144,24 @@ class UserRepository
                 ->getQuery()->getSingleScalarResult() > 0;
     }
 
-    public function hasByNetworkIdentity(string $network, string $identity): bool
-    {
-        return $this->repo->createQueryBuilder('t')
-                ->select('COUNT(t.id)')
-                ->innerJoin('t.networks', 'n')
-                ->andWhere('n.network = :network and n.identity = :identity')
-                ->setParameter(':network', $network)
-                ->setParameter(':identity', $identity)
-                ->getQuery()->getSingleScalarResult() > 0;
-    }
-
+    /**
+     * Add user.
+     *
+     * @param User $user User.
+     *
+     * @return void
+     */
     public function add(User $user): void
     {
         $this->em->persist($user);
     }
 
-    public function getAll()
+    /**
+     * Get all users.
+     *
+     * @return array
+     */
+    public function getAll(): array
     {
         return $this->repo->findAll();
     }

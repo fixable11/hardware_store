@@ -30,7 +30,7 @@ class ResetToken
     /**
      * ResetToken constructor.
      *
-     * @param string             $token  Reset token.
+     * @param string            $token   Reset token.
      * @param DateTimeImmutable $expires Expires date.
      */
     public function __construct(string $token, DateTimeImmutable $expires)
@@ -41,11 +41,19 @@ class ResetToken
         $this->expires = $expires;
     }
 
+    /**
+     * @param DateTimeImmutable $date Datetime.
+     *
+     * @return boolean
+     */
     public function isExpiredTo(DateTimeImmutable $date): bool
     {
         return $this->expires <= $date;
     }
 
+    /**
+     * @return string
+     */
     public function getToken(): string
     {
         return $this->token;
