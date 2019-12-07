@@ -11,6 +11,8 @@ use App\Model\User\Entity\Name;
 use App\Model\User\Entity\User;
 use App\Model\User\Repository\UserRepository;
 use App\Model\User\UseCase\Create\CreateDto;
+use App\Model\User\UseCase\Delete\DeleteDto;
+use App\Model\User\UseCase\Update\UpdateDto;
 
 /**
  * Class UserService.
@@ -59,15 +61,30 @@ class UserService
         $user = User::create(
             Id::next(),
             new \DateTimeImmutable(),
-            new Name(
-                $dto->firstName,
-                $dto->lastName
-            ),
+            new Name('First name','Last name'),
             $email,
-            $this->hasher->hash($this->generator->generate())
+            $this->hasher->hash($dto->password)
         );
 
         $this->repository->add($user);
+        $this->flusher->flush();
+
+        return $user;
+    }
+
+    public function update(UpdateDto $dto)
+    {
+        $user = $this->repository->get(new Id($dto->id));
+
+        $user->edit(new Email($dto->email), new Name($dto->firstName, $dto->lastName));
+
+        $this->flusher->flush();
+    }
+
+    public function delete(DeleteDto $dto)
+    {
+        $this->repository->delete(new Id($dto->id));
+
         $this->flusher->flush();
     }
 

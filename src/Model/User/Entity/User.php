@@ -43,7 +43,7 @@ class User implements UserInterface
     /**
      * @var DateTimeImmutable $date Date of user creation.
      *
-     * @SWG\Property(type="datetime", description="Datetime")
+     * @SWG\Property(type="datetime", description="Datetime", example="2019-12-07 07:30:40")
      *
      * @Groups("user")
      *
@@ -120,7 +120,6 @@ class User implements UserInterface
         $this->id = $id;
         $this->date = $date;
         $this->name = $name;
-        $this->role = 'ROLE_USER';
     }
 
     /**

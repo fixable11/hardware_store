@@ -9,6 +9,9 @@ use App\Model\User\Service\UserSerializer;
 use App\Model\User\Service\UserService;
 use App\Model\User\UseCase\Create\CreateDto;
 use App\Model\User\UseCase\Create\CreateForm;
+use App\Model\User\UseCase\Delete\DeleteDto;
+use App\Model\User\UseCase\Update\UpdateDto;
+use App\Model\User\UseCase\Update\UpdateForm;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\ORM\EntityManagerInterface;
 use DomainException;
@@ -23,6 +26,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class UsersController
@@ -74,7 +78,7 @@ class UsersController extends AbstractFOSRestController
      *     description="Unauthorized"
      * )
      *
-     * @SWG\Tag(name="users.index")
+     * @SWG\Tag(name="users")
      * @Security(name="Bearer")
      *
      * @Rest\Get("/users", name=".users.index", methods={"GET"})
@@ -94,7 +98,7 @@ class UsersController extends AbstractFOSRestController
     }
 
     /**
-     * List of the users.
+     * Create user.
      *
      * @Rest\Post("/users", name=".users.create", methods={"POST"})
      *
@@ -107,16 +111,19 @@ class UsersController extends AbstractFOSRestController
      *     @SWG\Schema(
      *         type="object",
      *         @SWG\Property(property="email", type="string", example="test@gmail.com"),
-     *         @SWG\Property(property="firstName", type="string", example="First name"),
-     *         @SWG\Property(property="lastName", type="string", example="Last name"),
+     *         @SWG\Property(property="password", type="string", example="123123"),
      *     )
      * )
      *
+     * @SWG\Response(
+     *     response=201,
+     *     description="Created",
+     *     @Model(type=User::class, groups={"user"})
+     * )
      *
      * @SWG\Response(
-     *     response=200,
-     *     description="Success",
-     *     @Model(type=User::class, groups={"user"})
+     *     response="409",
+     *     description="Conflict"
      * )
      *
      * @SWG\Response(
@@ -124,7 +131,7 @@ class UsersController extends AbstractFOSRestController
      *     description="Unauthorized"
      * )
      *
-     * @SWG\Tag(name="users.index")
+     * @SWG\Tag(name="users")
      * @Security(name="Bearer")
      *
      * @param Request $request Request.
@@ -142,8 +149,8 @@ class UsersController extends AbstractFOSRestController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
-                $this->userService->create($createDto);
-                return $this->handleView($this->view(['status' => 'ok'], Response::HTTP_CREATED));
+                $user = $this->userService->create($createDto);
+                return $this->handleView($this->view($user, Response::HTTP_CREATED));
             } catch (\DomainException $e) {
                 $this->logger->error($e->getMessage(), ['exception' => $e]);
 
@@ -154,5 +161,112 @@ class UsersController extends AbstractFOSRestController
         }
 
         return $this->handleView($this->view($form->getErrors()));
+    }
+
+    /**
+     * Update user.
+     *
+     * @Rest\Put("/users/{id}", name=".users.update", methods={"PUT"})
+     *
+     * @SWG\Parameter(
+     *     in="body",
+     *     type="string",
+     *     name="data",
+     *     required=true,
+     *     description="Data to update user",
+     *     @SWG\Schema(
+     *         type="object",
+     *         @SWG\Property(property="email", type="string", example="test@gmail.com"),
+     *         @SWG\Property(property="password", type="string", example="123123"),
+     *         @SWG\Property(property="firstName", type="string", example="First name"),
+     *         @SWG\Property(property="lastName", type="string", example="Last name"),
+     *     )
+     * )
+     *
+     * @SWG\Response(
+     *     response=204,
+     *     description="Updated",
+     *     @Model(type=User::class, groups={"user"})
+     * )
+     *
+     * @SWG\Response(
+     *     response="409",
+     *     description="Conflict"
+     * )
+     *
+     * @SWG\Response(
+     *     response="401",
+     *     description="Unauthorized"
+     * )
+     *
+     * @SWG\Tag(name="users")
+     * @Security(name="Bearer")
+     *
+     * @param Request $request Request.
+     * @param User    $user    User entity.
+     *
+     * @return RedirectResponse|Response
+     */
+    public function edit(Request $request, User $user)
+    {
+        $updateDto = UpdateDto::fromUser($user);
+        $form = $this->createForm(UpdateForm::class, $updateDto);
+
+        $data = json_decode($request->getContent(),true);
+
+        $form->submit($data);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $this->userService->update($updateDto);
+                return $this->handleView($this->view(['Updated'], Response::HTTP_NO_CONTENT));
+            } catch (\DomainException $e) {
+                $this->logger->error($e->getMessage(), ['exception' => $e]);
+                return $this->handleView(
+                    $this->view(['message' => $e->getMessage()], Response::HTTP_CONFLICT)
+                );
+            }
+        }
+
+        return $this->handleView($this->view($form->getErrors()));
+    }
+
+
+    /**
+     * Delete user.
+     *
+     * @Rest\Delete("/users/{id}", name=".users.update", methods={"DELETE"})
+     *
+     * @SWG\Response(
+     *     response=204,
+     *     description="Deleted",
+     * )
+     *
+     * @SWG\Response(
+     *     response="401",
+     *     description="Unauthorized"
+     * )
+     *
+     * @SWG\Tag(name="users")
+     * @Security(name="Bearer")
+     *
+     * @param Request $request Request.
+     * @param string  $id      User id.
+     *
+     * @return RedirectResponse|Response
+     */
+    public function delete(Request $request, string $id)
+    {
+        $deleteDto = new DeleteDto($id);
+
+        try {
+            $this->userService->delete($deleteDto);
+            return $this->handleView($this->view(['Deleted'], Response::HTTP_NO_CONTENT));
+        } catch (\DomainException $e) {
+            $this->logger->error($e->getMessage(), ['exception' => $e]);
+            return $this->handleView(
+                $this->view(['message' => $e->getMessage()], Response::HTTP_CONFLICT)
+            );
+        }
     }
 }

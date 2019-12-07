@@ -64,6 +64,15 @@ class UserRepository
         return $user;
     }
 
+    public function delete(Id $id)
+    {
+        if (!$user = $this->repo->find($id->getValue())) {
+            throw new EntityNotFoundException('User is not found.');
+        }
+
+        $this->em->remove($user);
+    }
+
     public function getByEmail(Email $email): User
     {
         /** @var User $user */
