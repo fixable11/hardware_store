@@ -91,15 +91,41 @@ class UsersController extends AbstractFOSRestController
         $view = $this->view($data, 200);
 
         return $this->handleView($view);
-
     }
 
     /**
      * List of the users.
      *
+     * @Rest\Post("/users", name=".users.create", methods={"POST"})
+     *
+     * @SWG\Parameter(
+     *     in="body",
+     *     type="string",
+     *     name="data",
+     *     required=true,
+     *     description="Data to create user",
+     *     @SWG\Schema(
+     *         type="object",
+     *         @SWG\Property(property="email", type="string", example="test@gmail.com"),
+     *         @SWG\Property(property="firstName", type="string", example="First name"),
+     *         @SWG\Property(property="lastName", type="string", example="Last name"),
+     *     )
+     * )
      *
      *
-     * @Rest\Get("/users", name=".users.create", methods={"POST"})
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=User::class, groups={"user"})
+     * )
+     *
+     * @SWG\Response(
+     *     response="401",
+     *     description="Unauthorized"
+     * )
+     *
+     * @SWG\Tag(name="users.index")
+     * @Security(name="Bearer")
      *
      * @param Request $request Request.
      *
@@ -120,7 +146,10 @@ class UsersController extends AbstractFOSRestController
                 return $this->handleView($this->view(['status' => 'ok'], Response::HTTP_CREATED));
             } catch (\DomainException $e) {
                 $this->logger->error($e->getMessage(), ['exception' => $e]);
-                return $this->handleView($this->view($e->getMessage(), Response::HTTP_CONFLICT));
+
+                return $this->handleView(
+                    $this->view(['message' => $e->getMessage()], Response::HTTP_CONFLICT)
+                );
             }
         }
 

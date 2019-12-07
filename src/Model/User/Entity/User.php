@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Swagger\Annotations as SWG;
 
@@ -18,10 +19,10 @@ use Swagger\Annotations as SWG;
  * @ORM\HasLifecycleCallbacks
  * @ORM\Table(name="users", uniqueConstraints={
  *     @ORM\UniqueConstraint(columns={"email"}),
- *     @ORM\UniqueConstraint(columns={"reset_token"})
+ *     @ORM\UniqueConstraint(columns={"reset_token_token"})
  * })
  */
-class User
+class User implements UserInterface
 {
     public const STATUS_ACTIVE = 'active';
     public const STATUS_WAIT = 'wait';
@@ -62,6 +63,11 @@ class User
     private $email;
 
     /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
+    /**
      * @var string The hashed password.
      *
      * @SWG\Property()
@@ -92,13 +98,6 @@ class User
     private $status;
 
     /**
-     * @var string|null
-     *
-     * @ORM\Column(type="string", name="new_email_token", nullable=true)
-     */
-    private $newEmailToken;
-
-    /**
      * @var Name $name Name.
      *
      * @SWG\Property(type="string", example="Username", description="Username")
@@ -121,6 +120,7 @@ class User
         $this->id = $id;
         $this->date = $date;
         $this->name = $name;
+        $this->role = 'ROLE_USER';
     }
 
     /**
@@ -305,5 +305,48 @@ class User
     public function getStatus(): string
     {
         return $this->status;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getPassword()
+    {
+        return $this->passwordHash;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getSalt()
+    {
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUsername()
+    {
+        return $this->email->getValue();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function eraseCredentials()
+    {
+        return null;
     }
 }

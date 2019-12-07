@@ -1,6 +1,8 @@
 framework:
     serializer: { enable_annotations: true }
     secret: '%env(APP_SECRET)%'
+    #templating:
+    #    engines: ['twig']
     #csrf_protection: true
     #http_method_override: true
 
