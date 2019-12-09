@@ -54,6 +54,6 @@ class CreateServiceTest extends TestCase
         $this->productRepository->expects($this->once())
             ->method('flush');
 
-        $this->createService->create($createDto);
+        self::assertEquals($product, $this->createService->create($createDto));
     }
 }
