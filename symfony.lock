@@ -126,6 +126,9 @@
             "config/packages/fos_rest.yaml"
         ]
     },
+    "fzaninotto/faker": {
+        "version": "v1.9.0"
+    },
     "hoa/compiler": {
         "version": "3.17.08.08"
     },

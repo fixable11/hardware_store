@@ -14,6 +14,8 @@ use App\Model\User\UseCase\Update\UpdateDto;
 use App\Model\User\UseCase\Update\UpdateForm;
 use Doctrine\Common\Annotations\AnnotationException;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\NoResultException;
 use DomainException;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Psr\Log\LoggerInterface;
@@ -137,6 +139,9 @@ class UsersController extends AbstractFOSRestController
      * @param Request $request Request.
      *
      * @return RedirectResponse|Response
+     *
+     * @throws NoResultException NoResultException.
+     * @throws NonUniqueResultException NonUniqueResultException.
      */
     public function create(Request $request)
     {

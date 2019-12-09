@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Model\User\Entity;
 
-use App\Model\SerializeableInterface;
 use Webmozart\Assert\Assert;
 use Doctrine\ORM\Mapping as ORM;
 

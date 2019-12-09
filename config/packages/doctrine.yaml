@@ -8,6 +8,8 @@ doctrine:
         types:
             user_email: 'App\Model\User\Entity\EmailType'
             user_id: 'App\Model\User\Entity\IdType'
+            product_sku: 'App\Model\Product\Entity\SkuType'
+            product_status: 'App\Model\Product\Entity\StatusType'
     orm:
         auto_generate_proxy_classes: true
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
@@ -25,3 +27,21 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Model/User/Entity'
                 prefix: 'App\Model\User\Entity'
                 alias: User
+            Product:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Model/Product/Entity'
+                prefix: 'App\Model\Product\Entity'
+                alias: Product
+            ProductDetail:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Model/Product/Entity'
+                prefix: 'App\Model\Product\Entity'
+                alias: ProductDetail
+            Brand:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Model/Product/Entity'
+                prefix: 'App\Model\Product\Entity'
+                alias: Brand
