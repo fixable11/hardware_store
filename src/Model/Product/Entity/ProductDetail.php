@@ -22,7 +22,7 @@ class ProductDetail
      *
      * @ORM\Id
      * @ORM\ManyToOne(targetEntity="Product", inversedBy="productDetail")
-     * @ORM\JoinColumn(name="product_sku", referencedColumnName="sku")
+     * @ORM\JoinColumn(name="product_sku", referencedColumnName="sku", onDelete="CASCADE")
      */
     private $product;
 

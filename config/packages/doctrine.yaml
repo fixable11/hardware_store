@@ -6,6 +6,7 @@ doctrine:
         # either here or in the DATABASE_URL env var (see .env file)
         #server_version: '5.7'
         types:
+            id: 'App\Model\ValueObjects\IdType'
             user_email: 'App\Model\User\Entity\EmailType'
             user_id: 'App\Model\User\Entity\IdType'
             product_sku: 'App\Model\Product\Entity\SkuType'
@@ -45,3 +46,9 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Model/Product/Entity'
                 prefix: 'App\Model\Product\Entity'
                 alias: Brand
+            Category:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Model/Category/Entity'
+                prefix: 'App\Model\Category\Entity'
+                alias: Category

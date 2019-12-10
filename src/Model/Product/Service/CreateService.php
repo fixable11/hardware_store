@@ -30,7 +30,6 @@ class CreateService
         $this->productRepository = $productRepository;
     }
 
-
     /**
      * Create product action.
      *

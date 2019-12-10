@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\Product\Entity;
 
+use App\Model\Category\Entity\Category;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -76,7 +77,7 @@ class Product
     /**
      * @var ProductDetail $productDetail ProductDetail.
      *
-     * @ORM\OneToMany(targetEntity="ProductDetail", mappedBy="product", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="ProductDetail", mappedBy="product", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $productDetail;
 
@@ -92,6 +93,14 @@ class Product
      * @Groups("product")
      */
     private $status;
+
+    /**
+     * Many products belongs to one category
+     *
+     * @ORM\ManyToOne(targetEntity="App\Model\Category\Entity\Category", inversedBy="products", cascade={"remove"})
+     * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
+     */
+    private $category;
 
     /**
      * Product constructor.
@@ -111,6 +120,7 @@ class Product
         $this->photos = [];
         $this->status = new Status(Status::STATUS_ACTIVE);
         $this->productDetail = new ArrayCollection();
+        $this->category = null;
     }
 
     /**
@@ -233,5 +243,18 @@ class Product
     public function getStatus(): Status
     {
         return $this->status;
+    }
+
+    public function assignCategory(Category $category)
+    {
+        $this->category = $category;
+    }
+
+    /**
+     * @return Category|null
+     */
+    public function getCategory(): ?Category
+    {
+        return $this->category;
     }
 }

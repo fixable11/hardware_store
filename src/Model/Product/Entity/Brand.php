@@ -20,7 +20,7 @@ class Brand
     /**
      * @var integer $id Id.
      *
-     * @ORM\Column(name="id")
+     * @ORM\Column(name="id", type="integer")
      * @ORM\Id()
      * @ORM\GeneratedValue()
      */
