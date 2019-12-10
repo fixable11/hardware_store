@@ -31,10 +31,10 @@ class CategoryBuilder
      * CategoryBuilder constructor.
      *
      * @param integer       $id
-     * @param string        $name
      * @param Category|null $parentCategory
+     * @param string        $name
      */
-    public function __construct(int $id, string $name = 'Category name', Category $parentCategory = null)
+    public function __construct(?int $id, Category $parentCategory = null, string $name = 'Category name')
     {
         $this->name = $name;
         $this->id = $id;
@@ -48,10 +48,12 @@ class CategoryBuilder
             $this->parentCategory
         );
 
-        $reflection = new ReflectionObject($category);
-        $property = $reflection->getProperty('id');
-        $property->setAccessible(true);
-        $property->setValue($category, new Id($this->id));
+        if ($this->id !== null) {
+            $reflection = new ReflectionObject($category);
+            $property = $reflection->getProperty('id');
+            $property->setAccessible(true);
+            $property->setValue($category, new Id($this->id));
+        }
 
         return $category;
     }

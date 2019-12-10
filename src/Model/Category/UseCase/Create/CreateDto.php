@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\Category\UseCase\Create;
 
+use App\Model\Category\Entity\Category;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class CreateDto

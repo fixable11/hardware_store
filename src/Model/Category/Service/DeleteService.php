@@ -35,8 +35,6 @@ class DeleteService
     public function delete(int $id): void
     {
         $category = $this->categoryRepository->get(new Id($id));
-
-
         $this->categoryRepository->delete($category);
         $this->categoryRepository->flush();
     }

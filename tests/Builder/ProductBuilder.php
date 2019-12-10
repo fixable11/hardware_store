@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Builder;
 
-
 use App\Model\Product\Entity\Product;
 use App\Model\Product\Entity\Sku;
 

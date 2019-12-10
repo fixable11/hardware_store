@@ -71,7 +71,7 @@ class Category
      */
     public function edit(?Category $parent, string $name)
     {
-        if ($parent->getId() === $this->getId()) {
+        if ($parent !== null && $parent->getId() === $this->getId()) {
             throw new DomainException('You cannot pass the same category');
         }
         if ($parent !== null) {
@@ -91,6 +91,14 @@ class Category
     public function getId(): ?Id
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     /**

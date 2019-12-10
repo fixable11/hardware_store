@@ -31,7 +31,7 @@ class Id
     /**
      * Get value of vo.
      *
-     * @return string
+     * @return integer
      */
     public function getValue(): int
     {
