@@ -39,7 +39,7 @@ class Category
      *
      * @Groups("category")
      *
-     * @ORM\ManyToOne(targetEntity="Category", cascade={"remove"})
+     * @ORM\ManyToOne(targetEntity="Category", cascade={"remove", "persist"})
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     private $parent;
