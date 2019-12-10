@@ -24,6 +24,8 @@ class Category
     /**
      * @var Id $id Entity id.
      *
+     * @Groups("category")
+     *
      * @ORM\Column(type="id", name="id")
      * @ORM\GeneratedValue()
      * @ORM\Id
@@ -33,13 +35,17 @@ class Category
     /**
      * Parent category.
      *
-     * @ORM\OneToOne(targetEntity="Category", cascade={"remove"}, orphanRemoval=true)
+     * @Groups("category")
+     *
+     * @ORM\ManyToOne(targetEntity="Category", cascade={"remove"})
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
      */
     private $parent;
 
     /**
      * @var string $name Category name.
+     *
+     * @Groups("category")
      *
      * @ORM\Column(type="string", name="name", nullable=false)
      */

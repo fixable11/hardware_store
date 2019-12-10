@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Model\Category\Service\CategorySerializer;
 use App\Model\Category\Service\CreateService;
 use App\Model\Category\Service\DeleteService;
 use App\Model\Category\Service\GetService;
@@ -12,6 +13,7 @@ use App\Model\Category\UseCase\Create\CreateDto;
 use App\Model\Category\UseCase\Create\CreateForm;
 use App\Model\Category\UseCase\Update\UpdateDto;
 use App\Model\Category\UseCase\Update\UpdateForm;
+use Doctrine\Common\Annotations\AnnotationException;
 use Exception;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Psr\Log\LoggerInterface;
@@ -23,6 +25,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use App\Model\Product\Entity\Product;
 use Swagger\Annotations as SWG;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 /**
  * Class CategoryController
@@ -37,13 +40,20 @@ class CategoryController extends AbstractFOSRestController
     private $logger;
 
     /**
+     * @var CategorySerializer $serializer Category serializer.
+     */
+    private $serializer;
+
+    /**
      * CategoryController constructor.
      *
-     * @param LoggerInterface $logger Logger.
+     * @param LoggerInterface    $logger     Logger.
+     * @param CategorySerializer $serializer Category serializer.
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, CategorySerializer $serializer)
     {
         $this->logger = $logger;
+        $this->serializer = $serializer;
     }
 
     /**
@@ -52,11 +62,15 @@ class CategoryController extends AbstractFOSRestController
      * @param GetService $service
      *
      * @return Response
+     *
+     * @throws AnnotationException
+     * @throws ExceptionInterface
      */
     public function index(GetService $service)
     {
-        $products = $service->getAll();
-        $view = $this->view($products, 200);
+        $categories = $service->getAll();
+        $categories = $this->serializer->serialize($categories);
+        $view = $this->view($categories, 200);
 
         return $this->handleView($view);
     }
@@ -68,12 +82,15 @@ class CategoryController extends AbstractFOSRestController
      * @param integer    $id
      *
      * @return Response
+     *
+     * @throws ExceptionInterface ExceptionInterface.
      */
     public function show(GetService $service, int $id)
     {
         try {
-            $product = $service->getById($id);
-            return $this->handleView($this->view($product, 200));
+            $category = $service->getById($id);
+            $category = $this->serializer->serializeOne($category);
+            return $this->handleView($this->view($category, 200));
         } catch (Exception $e) {
             $this->logger->warning($e->getMessage(), ['exception' => $e]);
             return $this->handleView(
@@ -89,6 +106,8 @@ class CategoryController extends AbstractFOSRestController
      * @param CreateService $service Create Service.
      *
      * @return Response
+     *
+     * @throws ExceptionInterface ExceptionInterface.
      */
     public function create(Request $request, CreateService $service)
     {
@@ -104,6 +123,7 @@ class CategoryController extends AbstractFOSRestController
 
         try {
             $category = $service->create($createDto);
+            $category = $this->serializer->serializeOne($category);
             return $this->handleView($this->view($category, Response::HTTP_CREATED));
         } catch (Exception $e) {
             $this->logger->warning($e->getMessage(), ['exception' => $e]);
@@ -121,6 +141,7 @@ class CategoryController extends AbstractFOSRestController
      * @param integer       $id      Entity id.
      *
      * @return Response
+     * @throws ExceptionInterface
      */
     public function update(Request $request, UpdateService $service, int $id)
     {
@@ -136,6 +157,7 @@ class CategoryController extends AbstractFOSRestController
 
         try {
             $category = $service->update($updateDto);
+            $category = $this->serializer->serializeOne($category);
             return $this->handleView($this->view($category, Response::HTTP_OK));
         } catch (Exception $e) {
             $this->logger->warning($e->getMessage(), ['exception' => $e]);
