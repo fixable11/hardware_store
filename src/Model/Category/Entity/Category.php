@@ -24,6 +24,8 @@ class Category
     /**
      * @var Id $id Entity id.
      *
+     * @SWG\Property(type="integer", example="1", description="Id")
+     *
      * @Groups("category")
      *
      * @ORM\Column(type="id", name="id")
@@ -48,6 +50,8 @@ class Category
      * @var string $name Category name.
      *
      * @Groups("category")
+     *
+     * @SWG\Property(type="string", example="Category name", description="Category name")
      *
      * @ORM\Column(type="string", name="name", nullable=false)
      */

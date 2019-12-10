@@ -21,6 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use App\Model\Category\Entity\Category;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use App\Model\Product\Entity\Product;
@@ -57,6 +58,25 @@ class CategoryController extends AbstractFOSRestController
     }
 
     /**
+     * List of all categories.
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=Category::class, groups={"category"})),
+     *     )
+     * )
+     *
+     * @SWG\Response(
+     *     response="401",
+     *     description="Unauthorized"
+     * )
+     *
+     * @SWG\Tag(name="categories")
+     * @Security(name="Bearer")
+     *
      * @Rest\Get("/categories", name=".categories.index", methods={"GET"})
      *
      * @param GetService $service Get service.
@@ -76,6 +96,22 @@ class CategoryController extends AbstractFOSRestController
     }
 
     /**
+     * Get the specific category.
+     *
+     * @SWG\Response(
+     *     response=200,
+     *     description="Success",
+     *     @Model(type=Category::class, groups={"category"})
+     * )
+     *
+     * @SWG\Response(
+     *     response="401",
+     *     description="Unauthorized",
+     * )
+     *
+     * @SWG\Tag(name="categories")
+     * @Security(name="Bearer")
+     *
      * @Rest\Get("/categories/{id}", name=".categories.show", methods={"GET"})
      *
      * @param GetService $service Get Service.
@@ -100,6 +136,41 @@ class CategoryController extends AbstractFOSRestController
     }
 
     /**
+     * Create product.
+     *
+     * @SWG\Parameter(
+     *     in="body",
+     *     type="string",
+     *     name="data",
+     *     required=true,
+     *     description="Data to create category",
+     *     @SWG\Schema(
+     *         type="object",
+     *         @SWG\Property(property="name", type="string", description="Category name", example="Category name"),
+     *         @SWG\Property(property="parentId", type="string", description="Parent category id (optional)"
+     *          , example="1")
+     *     )
+     * )
+     *
+     * @SWG\Response(
+     *     response=201,
+     *     description="Created",
+     *     @Model(type=Category::class, groups={"category"})
+     * )
+     *
+     * @SWG\Response(
+     *     response="409",
+     *     description="Conflict"
+     * )
+     *
+     * @SWG\Response(
+     *     response="401",
+     *     description="Unauthorized"
+     * )
+     *
+     * @SWG\Tag(name="categories")
+     * @Security(name="Bearer")
+     *
      * @Rest\Post("/categories", name=".categories.create", methods={"POST"})
      *
      * @param Request       $request Request.
@@ -134,6 +205,41 @@ class CategoryController extends AbstractFOSRestController
     }
 
     /**
+     * Update category.
+     *
+     * @SWG\Parameter(
+     *     in="body",
+     *     type="string",
+     *     name="data",
+     *     required=true,
+     *     description="Data to update category",
+     *     @SWG\Schema(
+     *         type="object",
+     *         @SWG\Property(property="name", type="string", description="Category name", example="Category name"),
+     *         @SWG\Property(property="parentId", type="string", description="Parent category id (optional)"
+     *          , example="1")
+     *     )
+     * )
+     *
+     * @SWG\Response(
+     *     response=201,
+     *     description="Created",
+     *     @Model(type=Category::class, groups={"category"})
+     * )
+     *
+     * @SWG\Response(
+     *     response="409",
+     *     description="Conflict"
+     * )
+     *
+     * @SWG\Response(
+     *     response="401",
+     *     description="Unauthorized"
+     * )
+     *
+     * @SWG\Tag(name="categories")
+     * @Security(name="Bearer")
+     *
      * @Rest\Post("/categories/{id}", name=".categories.update", methods={"PUT"})
      *
      * @param Request       $request Request.
@@ -169,6 +275,28 @@ class CategoryController extends AbstractFOSRestController
     }
 
     /**
+     * Delete category.
+     *
+     *
+     * @SWG\Response(
+     *     response=204,
+     *     description="No content"
+     * )
+     *
+     * @SWG\Response(
+     *     response="404",
+     *     description="Not found"
+     * )
+     *
+     *
+     * @SWG\Response(
+     *     response="401",
+     *     description="Unauthorized"
+     * )
+     *
+     * @SWG\Tag(name="categories")
+     * @Security(name="Bearer")
+     *
      * @Rest\Delete("/categories/{id}", name=".users.delete", methods={"DELETE"})
      *
      * @param Request       $request Request.
