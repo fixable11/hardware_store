@@ -17,12 +17,15 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 
+/**
+ * Class CategorySerializer.
+ */
 class CategorySerializer
 {
     /**
      * Serialize.
      *
-     * @param array $categories
+     * @param Category[] $categories Categories array.
      *
      * @return mixed
      *
@@ -51,11 +54,12 @@ class CategorySerializer
     }
 
     /**
-     * @param Category $category
+     * @param Category $category Category entity.
      *
      * @return mixed
-     * @throws AnnotationException
-     * @throws ExceptionInterface
+     *
+     * @throws AnnotationException AnnotationException.
+     * @throws ExceptionInterface ExceptionInterface.
      */
     public function serializeOne(Category $category)
     {

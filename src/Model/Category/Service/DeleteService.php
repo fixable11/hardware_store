@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Model\Category\Service;
 
-
 use App\Model\Category\Repository\CategoryRepository;
 use App\Model\ValueObjects\Id;
 
+/**
+ * Class DeleteService.
+ */
 class DeleteService
 {
     /**

@@ -75,9 +75,10 @@ class Product
     private $photos;
 
     /**
-     * @var ProductDetail $productDetail ProductDetail.
+     * @var ArrayCollection $productDetail ProductDetail.
      *
-     * @ORM\OneToMany(targetEntity="ProductDetail", mappedBy="product", cascade={"persist", "remove"}, orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity="ProductDetail", mappedBy="product", cascade={"persist", "remove"},
+     *     orphanRemoval=true)
      */
     private $productDetail;
 
@@ -96,6 +97,8 @@ class Product
 
     /**
      * Many products belongs to one category
+     *
+     * @var Category|null $category Product category.
      *
      * @ORM\ManyToOne(targetEntity="App\Model\Category\Entity\Category", inversedBy="products", cascade={"remove"})
      * @ORM\JoinColumn(name="category_id", referencedColumnName="id", nullable=true, onDelete="CASCADE")
@@ -245,7 +248,14 @@ class Product
         return $this->status;
     }
 
-    public function assignCategory(Category $category)
+    /**
+     * Assign category to product.
+     *
+     * @param Category $category Product category.
+     *
+     * @return void
+     */
+    public function assignCategory(Category $category): void
     {
         $this->category = $category;
     }

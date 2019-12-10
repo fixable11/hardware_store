@@ -59,12 +59,12 @@ class CategoryController extends AbstractFOSRestController
     /**
      * @Rest\Get("/categories", name=".categories.index", methods={"GET"})
      *
-     * @param GetService $service
+     * @param GetService $service Get service.
      *
      * @return Response
      *
-     * @throws AnnotationException
-     * @throws ExceptionInterface
+     * @throws AnnotationException AnnotationException.
+     * @throws ExceptionInterface ExceptionInterface.
      */
     public function index(GetService $service)
     {
@@ -79,7 +79,7 @@ class CategoryController extends AbstractFOSRestController
      * @Rest\Get("/categories/{id}", name=".categories.show", methods={"GET"})
      *
      * @param GetService $service Get Service.
-     * @param integer    $id
+     * @param integer    $id      Entity id.
      *
      * @return Response
      *
@@ -141,7 +141,8 @@ class CategoryController extends AbstractFOSRestController
      * @param integer       $id      Entity id.
      *
      * @return Response
-     * @throws ExceptionInterface
+     *
+     * @throws ExceptionInterface ExceptionInterface.
      */
     public function update(Request $request, UpdateService $service, int $id)
     {
@@ -170,9 +171,9 @@ class CategoryController extends AbstractFOSRestController
     /**
      * @Rest\Delete("/categories/{id}", name=".users.delete", methods={"DELETE"})
      *
-     * @param Request       $request
-     * @param DeleteService $service
-     * @param int           $id
+     * @param Request       $request Request.
+     * @param DeleteService $service DeleteService.
+     * @param integer       $id      Entity id.
      *
      * @return Response
      */

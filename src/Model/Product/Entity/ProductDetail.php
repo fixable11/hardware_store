@@ -57,7 +57,7 @@ class ProductDetail
     private $price;
 
     /**
-     * @var $color Product color.
+     * @var string $color color.
      *
      * @ORM\Id
      * @ORM\Column(type="string", name="color")

@@ -8,6 +8,9 @@ use App\Model\Category\Entity\Category;
 use App\Model\Category\Repository\CategoryRepository;
 use App\Model\ValueObjects\Id;
 
+/**
+ * Class GetService.
+ */
 class GetService
 {
     /**

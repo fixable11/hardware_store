@@ -10,6 +10,9 @@ use App\Model\ValueObjects\Id;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * Class CategoryRepository.
+ */
 class CategoryRepository
 {
     /**
@@ -38,10 +41,11 @@ class CategoryRepository
     /**
      * Get product by id.
      *
-     * @param Id $id
+     * @param Id $id Entity id.
      *
      * @return Category
      *
+     * @throws EntityNotFoundException EntityNotFoundException.
      */
     public function get(Id $id): Category
     {
@@ -55,7 +59,7 @@ class CategoryRepository
     /**
      * Delete product.
      *
-     * @param Category $category
+     * @param Category $category Category.
      *
      * @return void
      */

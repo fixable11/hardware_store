@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace App\Model\Category\Service;
 
-
 use App\Model\Category\Entity\Category;
 use App\Model\Category\Repository\CategoryRepository;
 use App\Model\Category\UseCase\Update\UpdateDto;
 use App\Model\ValueObjects\Id;
 
 /**
- * Class UpdateService
- *
- * @package App\Model\Category\Service
+ * Class UpdateService.
  */
 class UpdateService
 {
@@ -25,7 +22,7 @@ class UpdateService
     /**
      * UpdateService constructor.
      *
-     * @param CategoryRepository $categoryRepository
+     * @param CategoryRepository $categoryRepository CategoryRepository.
      */
     public function __construct(CategoryRepository $categoryRepository)
     {

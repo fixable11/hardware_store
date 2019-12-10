@@ -6,6 +6,9 @@ namespace App\Model\Category\UseCase\Update;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
+/**
+ * Class UpdateDto.
+ */
 class UpdateDto
 {
     /**

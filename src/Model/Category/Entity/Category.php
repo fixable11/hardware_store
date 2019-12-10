@@ -35,6 +35,8 @@ class Category
     /**
      * Parent category.
      *
+     * @var Category|null $parent Parent category.
+     *
      * @Groups("category")
      *
      * @ORM\ManyToOne(targetEntity="Category", cascade={"remove"})
@@ -52,6 +54,8 @@ class Category
     private $name;
 
     /**
+     * @var ArrayCollection $products Products.
+     *
      * One category has a many products.
      *
      * @ORM\OneToMany(targetEntity="App\Model\Product\Entity\Product", mappedBy="category")
@@ -61,8 +65,8 @@ class Category
     /**
      * Category constructor.
      *
-     * @param string        $name
-     * @param Category|null $parent
+     * @param string        $name   Category name.
+     * @param Category|null $parent Parent category.
      */
     public function __construct(string $name, Category $parent = null)
     {
@@ -72,10 +76,16 @@ class Category
     }
 
     /**
-     * @param null|Category $parent
-     * @param string        $name
+     * Edit category.
+     *
+     * @param null|Category $parent Parent category.
+     * @param string        $name   Category name.
+     *
+     * @return void
+     *
+     * @throws DomainException DomainException.
      */
-    public function edit(?Category $parent, string $name)
+    public function edit(?Category $parent, string $name): void
     {
         if ($parent !== null && $parent->getId() === $this->getId()) {
             throw new DomainException('You cannot pass the same category');
@@ -86,12 +96,19 @@ class Category
         $this->name = $name;
     }
 
-    public function makeParent()
+    /**
+     * Make category parent one.
+     *
+     * @return void
+     */
+    public function makeParent(): void
     {
         $this->parent = null;
     }
 
     /**
+     * Get id.
+     *
      * @return null|Id
      */
     public function getId(): ?Id
@@ -100,6 +117,8 @@ class Category
     }
 
     /**
+     * Get category name.
+     *
      * @return string
      */
     public function getName(): string
@@ -108,6 +127,8 @@ class Category
     }
 
     /**
+     * Get parent category.
+     *
      * @return null|Category
      */
     public function getParent(): ?Category
@@ -116,6 +137,8 @@ class Category
     }
 
     /**
+     * Get products.
+     *
      * @return ArrayCollection
      */
     public function getProducts(): ArrayCollection

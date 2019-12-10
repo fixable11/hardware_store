@@ -7,6 +7,11 @@ namespace App\Model\ValueObjects;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\IntegerType;
 
+/**
+ * Class IdType
+ *
+ * phpcs:ignoreFile
+ */
 class IdType extends IntegerType
 {
     public const NAME = 'id';
