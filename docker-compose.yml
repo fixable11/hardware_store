@@ -7,6 +7,7 @@ services:
             dockerfile: nginx.docker
         volumes:
             - ./:/app
+            - ./var/log/nginx:/var/log/nginx:cached
         depends_on:
             - php-fpm
             - mailer

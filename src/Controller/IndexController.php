@@ -9,15 +9,17 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
- * Class HomeController.
+ * Class IndexController.
  */
-class HomeController extends AbstractController
+class IndexController extends AbstractController
 {
     /**
+     * @Route("/{vueRouting}", requirements={"vueRouting"="^(?!api|_(profiler|wdt)).*"}, name="index")
+     *
      * @return Response
      */
     public function index()
     {
-        return $this->render('home.html.twig');
+        return $this->render('base.html.twig');
     }
 }

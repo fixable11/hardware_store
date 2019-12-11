@@ -6,6 +6,12 @@
 #    resource: '../src/Controller/'
 #    type:     annotation
 
+#frontend_index:
+#    path: '/{req}'
+#    defaults: { _controller: App\Controller\IndexController::index }
+#    requirements:
+#        req: "^((?!api).)*$"
+
 api_login_check:
     path: /api/login_check
 
