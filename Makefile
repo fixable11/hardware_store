@@ -38,6 +38,9 @@ sniff:
 
 perm:
 	sudo chown ${USER}:${USER} ./bin -R
+	sudo chown ${USER}:${USER} ./assets -R
+	sudo chown ${USER}:${USER} ./package.json -R
+	sudo chown ${USER}:${USER} ./webpack.config.js -R
 	sudo chown ${USER}:${USER} ./config -R
 	sudo chown ${USER}:${USER} ./docker -R
 	sudo chown ${USER}:${USER} ./public -R
@@ -51,6 +54,12 @@ perm:
 
 bash:
 	docker-compose exec php-fpm bash
+
+frontend-install:
+	docker-compose exec node sh npm i
+
+csfix:
+	docker-compose exec node npx eslint assets/vue --ext .js,.vue, --fix
 
 frontend-bash:
 	docker-compose exec node sh
