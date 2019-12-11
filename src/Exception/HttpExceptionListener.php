@@ -7,6 +7,9 @@ namespace App\Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
+/**
+ * Class HttpExceptionListener.
+ */
 class HttpExceptionListener
 {
     public function onKernelException(ExceptionEvent $event): void
