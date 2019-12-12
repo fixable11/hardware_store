@@ -54,8 +54,13 @@ Encore
     })
     .enableVueLoader()
     // enables Sass/SCSS support
-    .enableSassLoader()
 
+    .enableSassLoader(() => { return {
+        indentedSyntax: true,
+        sassOptions: {
+            indentedSyntax: true
+        }
+    }})
     // enable ESLint
     .addLoader({
         enforce: 'pre',
