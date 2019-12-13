@@ -1,9 +1,16 @@
 @import "~bootstrap";
+
+$slick-font-path: "~slick-carousel/slick/fonts/";
+$slick-loader-path: "~slick-carousel/slick/";
+@import "~slick-carousel/slick/slick", "~slick-carousel/slick/slick-theme";
+
 @import "./assets/scss/main.css";
 @import "./assets/scss/main";
 @import "./assets/scss/fonts";
 @import "./assets/scss/vars";
 @import "./assets/scss/media";
+
+
 
 //ul, li {
 //    margin: 0;

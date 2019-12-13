@@ -1,0 +1,455 @@
+@import "vars"
+
+header
+    .secondaryHeader
+        background-color: #f7f7f7
+        color: #737373
+        box-sizing: border-box
+
+        .item
+            padding: 5px 0
+            cursor: pointer
+
+        &__leftSide
+        .items
+            display: inline-flex
+            .item
+                padding-right: 20px
+                &:hover
+                    color: $link
+        &__rightSide
+            display: flex
+            display: -ms-flexbox
+            justify-content: flex-end
+            .items
+                display: inline-flex
+
+                .item
+                    position: relative
+
+                    &:hover
+                        background-color: #ebebeb
+
+                        .subItems
+                            transition: all .5s
+                            height: auto
+
+                    .title
+                        padding: 0 10px
+
+                        span
+                            color: $link
+
+                        i
+                            font-size: .8rem
+                            opacity: .5
+
+                    .subItems
+                        position: absolute
+                        min-width: 9vw
+                        background-color: #fff
+                        right: 0
+                        height: 0
+                        z-index: 999
+                        overflow: hidden
+                        margin-top: 5px
+                        transition: all .5s
+                        -webkit-box-shadow: 0px 0px 18px -10px rgba(0, 0, 0, 0.75)
+                        -moz-box-shadow: 0px 0px 18px -10px rgba(0, 0, 0, 0.75)
+                        box-shadow: 0px 0px 18px -10px rgba(0, 0, 0, 0.75)
+
+                        &__wrap
+                            padding: 10px 0
+
+                        &__item
+                            color: $text
+                            font-weight: 500
+                            white-space: nowrap
+                            padding: 5px 15px
+
+                            img
+                                padding-right: 5px
+
+                            &:hover
+                                background-color: #ebebeb
+
+    .mainHeader
+        flex-wrap: nowrap
+        padding: 1.5vw
+
+        &__bars
+            padding: 5px 15px
+            font-size: 1.2rem
+            border-radius: 2px
+            cursor: pointer
+
+            &:hover
+                background-color: rgba(255, 255, 255, .5)
+
+        &__logo
+            svg
+                max-width: 196px
+                max-height: 26px
+
+        &__search
+            padding: 0 20px
+
+            input
+                min-width: 100%
+                padding: 5px 15px
+                border-radius: 2px
+                border: 2px solid #e2e0e0
+
+                &::placeholder
+                    color: #999
+
+        &__number
+            color: #999
+            text-align: right
+
+            strong
+                color: $text
+                font-size: 1.2rem
+                display: block
+
+        &__user
+            display: flex
+            display: -ms-flexbox
+            align-items: center
+            justify-content: flex-end
+            font-size: 1.2rem
+
+            > *
+                border-radius: 3px
+                padding: 5px 15px
+
+                &:hover
+                    background-color: rgba(255, 255, 255, .5)
+
+            .favorites, .cart
+                position: relative
+
+                &__count
+                    position: absolute
+                    font-size: .65rem
+                    font-weight: 600
+                    display: flex
+                    display: -ms-flexbox
+                    align-items: center
+                    justify-content: center
+                    top: 10%
+                    right: 15%
+                    width: 15px
+                    height: 15px
+                    background-color: #fff
+                    border-radius: 50%
+
+.menuBar
+    padding: 5px 0
+    position: relative
+    background-color: $accent
+    font-weight: 500
+
+    &__menu
+        padding: 8px 0
+        height: max-content
+        border-radius: 2px
+
+        &__items
+            display: flex
+            display: -ms-flexbox
+
+            &-relative
+                position: relative
+
+            .item
+                position: relative
+                cursor: pointer
+                padding: 10px 15px
+                border-radius: 3px
+
+                &:hover
+                    background-color: rgba(255, 255, 255, .5)
+
+                &__megamenu
+                    display: none
+                    position: absolute
+                    color: $text
+                    top: 100%
+                    left: 0
+                    width: max-content
+                    height: min-content
+                    border-radius: 2px
+                    background-color: #fff
+                    z-index: 999
+                    background-position: bottom right
+                    background-repeat: no-repeat
+                    padding: 25px
+                    -webkit-box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3)
+                    -moz-box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3)
+                    box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3)
+
+                    &::visible
+                        display: flex
+                        display: -ms-flexbox
+
+                    .mainCategory
+                        min-width: 12vw
+
+                        &__title
+                            white-space: nowrap
+                            font-size: 1rem
+                            font-weight: 500
+                            padding-bottom: 5px
+                            border-bottom: 1px solid #ebebeb
+
+                        &__items
+                            padding-top: 10px
+
+                            a
+                                display: block
+
+                                &:hover
+                                    color: $link
+
+                            .subCats
+                                white-space: nowrap
+                                color: $lightText
+                                margin-bottom: 15px
+
+                                a
+                                    padding-bottom: 2px
+
+                            .mainCats
+                                font-size: 1rem
+                                font-weight: 500
+                                color: $text
+
+                &__subMenu
+                    display: none
+                    position: absolute
+                    top: 100%
+                    left: 0
+                    width: max-content
+                    background-color: #fff
+                    color: $text
+                    padding: 10px 0
+                    z-index: 999
+                    -webkit-box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3)
+                    -moz-box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3)
+                    box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3)
+
+                    .category
+                        position: relative
+                        display: block
+                        padding: 3px 25px
+                        font-weight: 500
+
+                        &:hover
+                            background-color: #ebebeb
+
+                            .subCategories
+                                display: block
+
+                        .item__title
+                            font-weight: 500
+                            min-width: 160px
+                            position: relative
+
+                            &:before
+                                content: "\f054"
+                                font-family: FontAwesome
+                                font-weight: 900
+                                font-size: .7rem
+                                opacity: .5
+                                position: absolute
+                                top: 2px
+                                bottom: 0
+                                right: 0
+
+                        .subCategories
+                            display: none
+                            position: absolute
+                            top: -10px
+                            left: 100%
+                            padding: 10px 0
+                            background-color: #fff
+                            white-space: nowrap
+                            -webkit-box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3)
+                            -moz-box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3)
+                            box-shadow: 5px 5px 15px -5px rgba(0, 0, 0, 0.3)
+
+                &__title
+                    font-weight: 600
+                    white-space: nowrap
+
+                    i
+                        color: rgba(58, 58, 58, .5)
+
+    &__user
+        display: flex
+        display: -ms-flexbox
+        align-items: center
+        justify-content: flex-end
+        font-size: 1.2rem
+
+        > *
+            border-radius: 3px
+            padding: 5px 15px
+
+            &:hover
+                background-color: rgba(255, 255, 255, .5)
+
+        .favorites, .cart
+            position: relative
+
+            &__count
+                position: absolute
+                font-size: .65rem
+                font-weight: 600
+                display: flex
+                display: -ms-flexbox
+                align-items: center
+                justify-content: center
+                top: 10%
+                right: 15%
+                width: 15px
+                height: 15px
+                background-color: #fff
+                border-radius: 50%
+
+            &:before
+                content: ''
+                position: absolute
+                top: 0
+                right: 0
+                width: 10px
+                height: 10px
+
+.mainNav
+    &__menu
+        margin-top: -55px
+        color: #fff
+        padding: 8px 0
+        height: max-content
+        //min-width: 16vw
+        border-radius: 2px
+        background-color: $text
+        .title
+            padding: 0 15px
+            font-size: 1rem
+            i
+                padding-right: 15px
+                color: #859ba6
+        &__items
+            position: absolute
+            width: 100%
+            top: 35px
+            z-index: 1000
+            left: 0
+            background-color: #3D464D
+            padding-top: 21px
+            .item
+                cursor: pointer
+                padding: 6px 15px
+                font-weight: 400
+                &_relative
+                    position: relative
+                &:hover
+                    background-color: #525D66
+                    .item__megamenu
+                        display: flex
+                        display: -ms-flexbox
+                    .item__subMenu
+                        display: block
+                &__title
+                &__megamenu
+                    display: none
+                    position: absolute
+                    color: $text
+                    margin: 0
+                    top: 21px
+                    bottom: -10px
+                    left: 100%
+                    width: max-content
+                    border-radius: 2px
+                    background-color: #fff
+                    z-index: 999
+                    background-position: bottom right
+                    background-repeat: no-repeat
+                    padding: 25px
+                    -webkit-box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.3)
+                    -moz-box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.3)
+                    box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.3)
+                    .mainCategory
+                        min-width: 12vw
+                        &__title
+                            white-space: nowrap
+                            font-size: 1rem
+                            font-weight: 500
+                            padding-bottom: 5px
+                            border-bottom: 1px solid #ebebeb
+                        &__items
+                            padding-top: 10px
+                            a
+                                display: block
+                                &:hover
+                                    color: $link
+                            .subCats
+                                color: $lightText
+                                margin-bottom: 15px
+                                a
+                                    padding-bottom: 2px
+                            .mainCats
+                                font-size: 1rem
+                                font-weight: 500
+                                color: $text
+                &__subMenu
+                    display: none
+                    position: absolute
+                    top: 0
+                    left: 100%
+                    width: max-content
+                    background-color: #fff
+                    color: $text
+                    padding: 10px 0
+                    z-index: 999
+                    -webkit-box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.3)
+                    -moz-box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.3)
+                    box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.3)
+                    .category
+                        position: relative
+                        display: block
+                        padding: 3px 25px
+                        font-weight: 500
+                        &:hover
+                            background-color: #ebebeb
+                            .subCategories
+                                display: block
+                        .item__title
+                            min-width: 160px
+                        .subCategories
+                            display: none
+                            position: absolute
+                            top: -10px
+                            left: 100%
+                            padding: 10px 0
+                            background-color: #fff
+                            white-space: nowrap
+                            -webkit-box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.3)
+                            -moz-box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.3)
+                            box-shadow: 5px 5px 15px -5px rgba(0,0,0,0.3)
+                &.withSub
+                    .item__title
+                        position: relative
+                        &:before
+                            content: "\f054"
+                            font-family: FontAwesome
+                            font-weight: 900
+                            font-size: .7rem
+                            opacity: .5
+                            position: absolute
+                            top: 2px
+                            bottom: 0
+                            right: 0
+

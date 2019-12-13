@@ -13,7 +13,8 @@ import FooterComponent from "./components/Footer";
 export default {
     name: "App",
     components: {HeaderComponent, FooterComponent},
-
+    methods: {
+    },
     created() {
 
     }
