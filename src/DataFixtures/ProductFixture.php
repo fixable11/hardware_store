@@ -21,7 +21,7 @@ use Faker\Generator;
  */
 class ProductFixture extends Fixture implements DependentFixtureInterface
 {
-    public const ITERATIONS = 5;
+    public const ITERATIONS = 30;
 
     /**
      * @var Generator $faker Faker.
@@ -57,7 +57,7 @@ class ProductFixture extends Fixture implements DependentFixtureInterface
             /** @var Category $category */
             $category = $this->getReference(CategoryFixture::CATEGORY_REFERENCE . '_' . $i);
             $product->assignCategory($category);
-            for ($j = 0; $j < self::ITERATIONS; $j++) {
+            for ($j = 0; $j < round(self::ITERATIONS / 2); $j++) {
                 $product->addProductDetail(
                     'ver' . $this->faker->randomDigit,
                     $this->faker->numberBetween(1, 100),
