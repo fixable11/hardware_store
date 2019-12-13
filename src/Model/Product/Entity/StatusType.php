@@ -21,7 +21,7 @@ class StatusType extends StringType
      */
     public function convertToDatabaseValue($value, AbstractPlatform $platform)
     {
-        return $value instanceof Sku ? $value->getValue() : $value;
+        return $value instanceof Status ? $value->getValue() : $value;
     }
 
     /**
@@ -29,7 +29,7 @@ class StatusType extends StringType
      */
     public function convertToPHPValue($value, AbstractPlatform $platform)
     {
-        return ! empty($value) ? new Sku($value) : null;
+        return ! empty($value) ? new Status($value) : null;
     }
 
     /**

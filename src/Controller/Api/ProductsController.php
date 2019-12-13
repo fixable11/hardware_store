@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
+use App\Model\Normalizers\PaginatorNormalizer;
+use App\Model\Product\Filter\GetFilter;
 use App\Model\Product\Service\CreateService;
 use App\Model\Product\Service\DeleteService;
 use App\Model\Product\Service\GetService;
+use App\Model\Product\Service\ProductNormalizer;
 use App\Model\Product\Service\UpdateService;
 use App\Model\Product\UseCase\Create\CreateDto;
 use App\Model\Product\UseCase\Create\CreateForm;
@@ -24,6 +27,7 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use App\Model\Product\Entity\Product;
 use Swagger\Annotations as SWG;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 /**
  * Class UsersController
@@ -38,13 +42,20 @@ class ProductsController extends AbstractFOSRestController
     private $logger;
 
     /**
+     * @var PaginatorNormalizer $paginatorNormalizer Paginator normalizer.
+     */
+    private $paginatorNormalizer;
+
+    /**
      * ProductsController constructor.
      *
-     * @param LoggerInterface $logger Logger.
+     * @param LoggerInterface     $logger              Logger.
+     * @param PaginatorNormalizer $paginatorNormalizer Paginator normalizer.
      */
-    public function __construct(LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger, PaginatorNormalizer $paginatorNormalizer)
     {
         $this->logger = $logger;
+        $this->paginatorNormalizer = $paginatorNormalizer;
     }
 
     /**
@@ -69,14 +80,25 @@ class ProductsController extends AbstractFOSRestController
      *
      * @Rest\Get("/products", name=".products.index", methods={"GET"})
      *
-     * @param GetService $service Get products service.
+     * @param GetService        $service Get products service.
+     * @param Request           $request Request.
+     *
+     * @param ProductNormalizer $normalizer
      *
      * @return Response
+     *
+     * @throws ExceptionInterface ExceptionInterface.
      */
-    public function index(GetService $service)
+    public function index(GetService $service, Request $request, ProductNormalizer $normalizer)
     {
-        $products = $service->getAll();
-        $view = $this->view($products, 200);
+        $filter = new GetFilter(
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 10)
+        );
+
+        $paginator = $service->getAll($filter);
+
+        $view = $this->view($this->paginatorNormalizer->normalize($paginator, $normalizer), 200);
 
         return $this->handleView($view);
     }

@@ -6,7 +6,9 @@ namespace App\Model\Product\Service;
 
 use App\Model\Product\Entity\Product;
 use App\Model\Product\Entity\Sku;
+use App\Model\Product\Filter\GetFilter;
 use App\Model\Product\Repository\ProductRepository;
+use Knp\Component\Pager\Pagination\PaginationInterface;
 
 /**
  * Class GetService.
@@ -31,11 +33,13 @@ class GetService
     /**
      * Get all products.
      *
-     * @return array
+     * @param GetFilter $filter
+     *
+     * @return PaginationInterface
      */
-    public function getAll()
+    public function getAll(GetFilter $filter)
     {
-        return $this->productRepository->getAll();
+        return $this->productRepository->getAll($filter);
     }
 
     /**

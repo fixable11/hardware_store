@@ -6,6 +6,7 @@ namespace App\Model\Product\Entity;
 
 use App\Model\Category\Entity\Category;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Swagger\Annotations as SWG;
@@ -25,7 +26,7 @@ class Product
      *
      * @Groups("product")
      *
-     * @ORM\Column(type="guid")
+     * @ORM\Column(type="product_sku")
      * @ORM\Id
      */
     private $sku;
@@ -74,7 +75,7 @@ class Product
     private $photos;
 
     /**
-     * @var ArrayCollection $productDetail ProductDetail.
+     * @var Collection $productDetail ProductDetail.
      *
      * @ORM\OneToMany(targetEntity="ProductDetail", mappedBy="product", cascade={"persist", "remove"},
      *     orphanRemoval=true)
@@ -265,5 +266,13 @@ class Product
     public function getCategory(): ?Category
     {
         return $this->category;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getProductDetail(): Collection
+    {
+        return $this->productDetail;
     }
 }

@@ -7,8 +7,13 @@ namespace App\Model\Product\Repository;
 use App\Model\EntityNotFoundException;
 use App\Model\Product\Entity\Product;
 use App\Model\Product\Entity\Sku;
+use App\Model\Product\Filter\GetFilter;
+use Doctrine\DBAL\FetchMode;
+use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Knp\Component\Pager\PaginatorInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface as Paginator;
 
 /**
  * Class ProductRepository.
@@ -26,16 +31,23 @@ class ProductRepository
     private $repo;
 
     /**
+     * @var PaginatorInterface $paginator Paginator.
+     */
+    private $paginator;
+
+    /**
      * UserRepository constructor.
      *
      * @param EntityManagerInterface $em Entity manager.
+     * @param PaginatorInterface     $paginator
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(EntityManagerInterface $em, PaginatorInterface $paginator)
     {
         $this->em = $em;
         /** @var EntityRepository $repo */
         $repo = $em->getRepository(Product::class);
         $this->repo = $repo;
+        $this->paginator = $paginator;
     }
 
     /**
@@ -85,11 +97,19 @@ class ProductRepository
     /**
      * Get all products.
      *
-     * @return array
+     * @param GetFilter $filter Filter.
+     *
+     * @return Paginator
      */
-    public function getAll(): array
+    public function getAll(GetFilter $filter): Paginator
     {
-        return $this->repo->findAll();
+        $qb = $this->repo->createQueryBuilder('product');
+
+        return $this->paginator->paginate(
+            $qb,
+            $filter->page,
+            $filter->limit
+        );
     }
 
     /**
