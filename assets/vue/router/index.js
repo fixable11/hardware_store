@@ -1,6 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Index from "../components/Index/Index";
+import Index from "../views/Index";
 import Product from "../views/Product";
 
 Vue.use(VueRouter);

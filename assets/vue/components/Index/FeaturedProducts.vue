@@ -64,6 +64,7 @@
 
     export default {
         name: "FeaturedProducts",
+        inject: ['productsRepository'],
         data() {
             return {
                 featuredProducts: [
@@ -105,6 +106,10 @@
                 ],
             }
         },
+        async created() {
+            let featuredProducts = await this.productsRepository.getAllProducts();
+            console.log(featuredProducts);
+        },
         mounted() {
             $('.featuredProducts .products__items').slick({
                 slidesToShow: 4,
@@ -136,7 +141,7 @@
                 ]
             });
 
-        }
+        },
     }
 </script>
 

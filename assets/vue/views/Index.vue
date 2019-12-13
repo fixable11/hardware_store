@@ -10,11 +10,11 @@
 
 <script>
 
-import Slider from "./Slider";
-import Services from "./Services";
-import FeaturedProducts from "./FeaturedProducts";
-import Banner from "./Banner";
-import Bestsellers from "./Bestsellers";
+import Slider from "../components/Index/Slider";
+import Services from "../components/Index/Services";
+import FeaturedProducts from "../components/Index/FeaturedProducts";
+import Banner from "../components/Index/Banner";
+import Bestsellers from "../components/Index/Bestsellers";
 
 export default {
     components: {
