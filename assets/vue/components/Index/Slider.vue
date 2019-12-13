@@ -1,54 +1,55 @@
 <template>
-    <div class="container">
-        <div class="row no-gutters">
-            <div class="offset-lg-3 col-lg-9">
-                <div class="headerSlider">
-                    <div class="headerSlider__item"
-                         :style="{ backgroundImage: 'url(' + slide.image + ')' }"
-                         v-for="slide in slides"
-                    >
-                        <div class="headerSlider__inner">
-                            <h2 class="headerSlider__title">{{ slide.title }}</h2>
-                            <p class="headerSlider__p">{{ slide.p }}</p>
-                            <button class="headerSlider__btn">Shop Now</button>
+    <section class="slider">
+        <div class="container">
+            <div class="row no-gutters">
+                <div class="offset-lg-3 col-lg-9">
+                    <div class="headerSlider">
+                        <div class="headerSlider__item"
+                             :style="{ backgroundImage: 'url(' + slide.image + ')' }"
+                             v-for="slide in slides"
+                        >
+                            <div class="headerSlider__inner">
+                                <h2 class="headerSlider__title">{{ slide.title }}</h2>
+                                <p class="headerSlider__p">{{ slide.p }}</p>
+                                <button class="headerSlider__btn">Shop Now</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </template>
 
 <script>
     import $ from "jquery";
     import "slick-carousel";
 
-export default {
-    name: "Index",
-    data() {
-        return {
-            slides: [
-                {
-                    image: require('../assets/images/slides/slide-1-full.jpg'),
-                    title: "Big choice of Plumbing products",
-                    p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui veritatis, fuga dolores voluptate exercitationem distinctio!",
-                },
-                {
-                    image: require('../assets/images/slides/slide-2-full.jpg'),
-                    title: "Big choice of Plumbing products",
-                    p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui veritatis, fuga dolores voluptate exercitationem distinctio!",
-                },
-            ],
+    export default {
+        name: "Slider",
+        data() {
+            return {
+                slides: [
+                    {
+                        image: require('../../assets/images/slides/slide-1-full.jpg'),
+                        title: "Big choice of Plumbing products",
+                        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui veritatis, fuga dolores voluptate exercitationem distinctio!",
+                    },
+                    {
+                        image: require('../../assets/images/slides/slide-2-full.jpg'),
+                        title: "Big choice of Plumbing products",
+                        p: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui veritatis, fuga dolores voluptate exercitationem distinctio!",
+                    },
+                ],
+            }
+        },
+        mounted() {
+            $('.headerSlider').slick({
+                arrows: false,
+                dots: true,
+            });
         }
-    },
-    mounted() {
-        $('.headerSlider').slick({
-            arrows: false,
-            dots: true,
-        });
     }
-};
-
 </script>
 
 <style lang="scss">
