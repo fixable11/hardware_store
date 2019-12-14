@@ -1,7 +1,6 @@
 import axios from 'axios';
 
 const apiUri = process.env.API_URL;
-console.log(process.env);
 
 class apiService {
     constructor(axios) {
