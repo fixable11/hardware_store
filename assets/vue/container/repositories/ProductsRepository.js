@@ -1,4 +1,5 @@
 const productsEndpoint = 'products';
+const productEndpoint = 'products/{sku}';
 
 
 /**
@@ -22,6 +23,16 @@ class ProductsRepository {
      */
     async getAllProducts() {
         return this.api.get(productsEndpoint);
+    }
+
+    /**
+     * Get product by sku.
+     *
+     * @param sku
+     * @returns {Promise<*>}
+     */
+    async getProduct(sku) {
+        return this.api.get(productEndpoint.replace('{sku}', sku));
     }
 }
 

@@ -20,7 +20,9 @@
                      :data-type="product.status"
                 >
                     <div class="wrap">
-                        <div class="products__items__item__image"><img :src="product.image" alt=""></div>
+                        <div class="products__items__item__image">
+                            <img :src="getPhoto(product.photos)" alt="">
+                        </div>
                         <div class="products__items__item__info">
                             <div class="name"><a href="#">{{ product.name }}</a></div>
                             <div class="reviews">
@@ -73,75 +75,79 @@
                         name: 'Electric Planer Brandix KL370090G 300 Watts',
                         reviewsCount: 11,
                         price: 749.00,
-                        image: require('../../assets/images/products/product-1.jpg'),
+                        photos: [require('../../assets/images/products/product-1.jpg')],
                     },
                     {
                         status: 'new',
                         name: 'Electric Planer Brandix KL370090G 300 Watts',
                         reviewsCount: 11,
                         price: 749.00,
-                        image: require('../../assets/images/products/product-2.jpg'),
+                        photos: [require('../../assets/images/products/product-2.jpg')],
                     },
                     {
                         status: 'new',
                         name: 'Electric Planer Brandix KL370090G 300 Watts',
                         reviewsCount: 11,
                         price: 749.00,
-                        image: require('../../assets/images/products/product-3.jpg'),
+                        photos: [require('../../assets/images/products/product-3.jpg')],
                     },
                     {
-                        status: 'sale',
+                        status: 'new',
                         name: 'Electric Planer Brandix KL370090G 300 Watts',
                         reviewsCount: 11,
                         price: 749.00,
-                        image: require('../../assets/images/products/product-4.jpg'),
-                    },
-                    {
-                        status: 'sale',
-                        name: 'Electric Planer Brandix KL370090G 300 Watts',
-                        reviewsCount: 11,
-                        price: 749.00,
-                        image: require('../../assets/images/products/product-5.jpg'),
+                        photos: [require('../../assets/images/products/product-4.jpg')],
                     },
                 ],
             }
         },
         async created() {
-            let featuredProducts = await this.productsRepository.getAllProducts();
-            console.log(featuredProducts);
-        },
-        mounted() {
-            $('.featuredProducts .products__items').slick({
-                slidesToShow: 4,
-                slidesToScroll: 1,
-                dots: false,
-                paralax: true,
-                appendArrows: $('.featuredProducts .products__header .products__header__arrows'),
-                prevArrow: '<div class="leftArrow arrow"><i class="fas fa-chevron-left"></i></div>',
-                nextArrow: '<div class="rightArrow arrow"><i class="fas fa-chevron-right"></i></div>',
-                responsive: [
-                    {
-                        breakpoint: 992,
-                        settings: {
-                            slidesToShow: 3,
-                        }
-                    },
-                    {
-                        breakpoint: 768,
-                        settings: {
-                            slidesToShow: 2,
-                        }
-                    },
-                    {
-                        breakpoint: 576,
-                        settings: {
-                            slidesToShow: 1,
-                        }
-                    }
-                ]
-            });
+
 
         },
+        async mounted() {
+            //this.featuredProducts = await this.productsRepository.getAllProducts();
+            this.mountSlider();
+        },
+        methods: {
+            getPhoto(photos) {
+                if (Array.isArray(photos)) {
+                    return photos.find(x => x !== undefined);
+                }
+                return '';
+            },
+            mountSlider() {
+                $('.featuredProducts .products__items').slick({
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                    dots: false,
+                    paralax: true,
+                    appendArrows: $('.featuredProducts .products__header .products__header__arrows'),
+                    prevArrow: '<div class="leftArrow arrow"><i class="fas fa-chevron-left"></i></div>',
+                    nextArrow: '<div class="rightArrow arrow"><i class="fas fa-chevron-right"></i></div>',
+                    responsive: [
+                        {
+                            breakpoint: 992,
+                            settings: {
+                                slidesToShow: 3,
+                            }
+                        },
+                        {
+                            breakpoint: 768,
+                            settings: {
+                                slidesToShow: 2,
+                            }
+                        },
+                        {
+                            breakpoint: 576,
+                            settings: {
+                                slidesToShow: 1,
+                            }
+                        }
+                    ]
+                });
+            },
+        }
     }
 </script>
 
