@@ -33,6 +33,11 @@ Encore
         "process.env": dotenv.parsed
     }))
 
+    .copyFiles({
+        from: './assets/vue/assets/images',
+        to: 'images/[path][name].[ext]'
+    })
+
     // When enabled, Webpack "splits" your files into smaller pieces for greater optimization.
     .splitEntryChunks()
 

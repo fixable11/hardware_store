@@ -45,6 +45,16 @@ class UpdateDto
     public $status;
 
     /**
+     * @var array $photos Photos.
+     *
+     * @Assert\All({
+     *     @Assert\Image,
+     *     @Assert\NotBlank()
+     * })
+     */
+    public $photos = [];
+
+    /**
      * UpdateDto constructor.
      *
      * @param string $sku Product sku.
@@ -68,6 +78,7 @@ class UpdateDto
         $dto->sku =  $product->getSku()->getValue();
         $dto->description = $product->getDescription();
         $dto->status = $product->getStatus()->getValue();
+        $dto->photos = $product->getPhotos();
 
         return $dto;
     }

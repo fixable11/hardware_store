@@ -28,6 +28,16 @@ class CreateDto
     public $name;
 
     /**
+     * @var array $photos Photos.
+     *
+     * @Assert\All({
+     *     @Assert\Image,
+     *     @Assert\NotBlank()
+     * })
+     */
+    public $photos = [];
+
+    /**
      * @var string $description Product desc.
      * @Assert\NotBlank()
      * @Assert\Length(min = 3)
@@ -48,6 +58,7 @@ class CreateDto
         $dto->name = $product->getName();
         $dto->sku =  $product->getSku()->getValue();
         $dto->description = $product->getDescription();
+        $dto->photos = $product->getPhotos();
 
         return $dto;
     }

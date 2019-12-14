@@ -260,12 +260,22 @@
 
     export default {
         name: "Product",
+        inject: ['productsRepository'],
         data() {
             return {
 
             }
         },
-        mounted() {
+        async mounted() {
+            let sku = this.$route.params.sku;
+
+
+            let {data} = await this.productsRepository.getProduct(sku).catch(err => {
+                this.$router.push('/404')
+            });
+
+            let products = [...data];
+
 
             $('.product .product__galery__slider').slick({
                 slidesToShow: 1,

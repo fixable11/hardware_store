@@ -111,16 +111,18 @@ class Product
      * @param Sku    $sku         Product sku.
      * @param string $name        Name.
      * @param string $description Description.
+     * @param array  $photos
      */
     public function __construct(
         Sku $sku,
         string $name,
-        string $description
+        string $description,
+        array $photos = []
     ) {
         $this->sku = $sku;
         $this->name = $name;
         $this->description = $description;
-        $this->photos = [];
+        $this->photos = $photos;
         $this->status = new Status(Status::STATUS_ACTIVE);
         $this->productDetail = new ArrayCollection();
         $this->category = null;
@@ -177,15 +179,19 @@ class Product
      * @param string $name        Product name.
      * @param string $description Product description.
      * @param Status $status      Product status.
+     * @param array  $photos      Photos.
      *
      * @return void
      */
-    public function edit(string $name, string $description, Status $status): void
+    public function edit(string $name, string $description, Status $status, array $photos = []): void
     {
         //$this->sku = $sku;
         $this->name = $name;
         $this->description = $description;
         $this->status = $status;
+        if (! empty($photos)) {
+            $this->photos = $photos;
+        }
     }
 
     /**

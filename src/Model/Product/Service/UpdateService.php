@@ -43,7 +43,8 @@ class UpdateService
         $product->edit(
             $dto->name,
             $dto->description,
-            new Status($dto->status)
+            new Status($dto->status),
+            $dto->photos
         );
 
         $this->productRepository->flush();

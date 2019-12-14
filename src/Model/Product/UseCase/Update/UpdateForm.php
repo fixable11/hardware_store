@@ -30,6 +30,15 @@ class UpdateForm extends AbstractType
                 'label' => 'Product description',
                 'required' => true
             ])
+            ->add('photos', Type\FileType::class, [
+                'required' => false,
+                'multiple' => true,
+                'label' => 'Product photos',
+                'attr'     => [
+                    'accept' => 'image/*',
+                    'multiple' => 'multiple'
+                ],
+            ])
             ->add('status', Type\TextType::class, [
                 'label' => 'Product status',
                 'required' => true

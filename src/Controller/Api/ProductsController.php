@@ -15,6 +15,7 @@ use App\Model\Product\UseCase\Create\CreateDto;
 use App\Model\Product\UseCase\Create\CreateForm;
 use App\Model\Product\UseCase\Update\UpdateDto;
 use App\Model\Product\UseCase\Update\UpdateForm;
+use App\Service\FileUploader;
 use Exception;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Psr\Log\LoggerInterface;
@@ -45,17 +46,26 @@ class ProductsController extends AbstractFOSRestController
      * @var PaginatorNormalizer $paginatorNormalizer Paginator normalizer.
      */
     private $paginatorNormalizer;
+    /**
+     * @var FileUploader
+     */
+    private $uploader;
 
     /**
      * ProductsController constructor.
      *
      * @param LoggerInterface     $logger              Logger.
      * @param PaginatorNormalizer $paginatorNormalizer Paginator normalizer.
+     * @param FileUploader        $uploader
      */
-    public function __construct(LoggerInterface $logger, PaginatorNormalizer $paginatorNormalizer)
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        PaginatorNormalizer $paginatorNormalizer,
+        FileUploader $uploader
+    ) {
         $this->logger = $logger;
         $this->paginatorNormalizer = $paginatorNormalizer;
+        $this->uploader = $uploader;
     }
 
     /**
@@ -184,28 +194,30 @@ class ProductsController extends AbstractFOSRestController
      * @param CreateService $service Create service.
      *
      * @return Response
-     *
      */
     public function create(Request $request, CreateService $service)
     {
         $createDto = new CreateDto();
         $form = $this->createForm(CreateForm::class, $createDto);
-        $data = json_decode($request->getContent(), true);
-        $form->submit($data);
+        $form->submit(array_merge($request->request->all(), $request->files->all()));
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $product = $service->create($createDto);
-                return $this->handleView($this->view($product, Response::HTTP_CREATED));
-            } catch (Exception $e) {
-                $this->logger->warning($e->getMessage(), ['exception' => $e]);
-                return $this->handleView(
-                    $this->view(['message' => $e->getMessage()], Response::HTTP_CONFLICT)
-                );
-            }
+        if (! $form->isSubmitted() || ! $form->isValid()) {
+            return $this->handleView($this->view($form->getErrors()));
         }
 
-        return $this->handleView($this->view($form->getErrors()));
+        try {
+            $paths = $this->uploader->upload($createDto->photos);
+            $createDto->photos = $paths;
+            $product = $service->create($createDto);
+
+            return $this->handleView($this->view($product, Response::HTTP_CREATED));
+        } catch (Exception $e) {
+            $this->logger->warning($e->getMessage(), ['exception' => $e]);
+
+            return $this->handleView(
+                $this->view(['message' => $e->getMessage()], Response::HTTP_CONFLICT)
+            );
+        }
     }
 
 
@@ -248,7 +260,7 @@ class ProductsController extends AbstractFOSRestController
      * @SWG\Tag(name="products")
      * @Security(name="Bearer")
      *
-     * @Rest\Put("/products/{sku}", name=".products.edit", methods={"PUT"})
+     * @Rest\Post("/products/{sku}", name=".products.edit", methods={"POST"})
      *
      * @param Request       $request Request.
      * @param UpdateService $service UpdateService.
@@ -260,22 +272,25 @@ class ProductsController extends AbstractFOSRestController
     {
         $updateDto = new UpdateDto($sku);
         $form = $this->createForm(UpdateForm::class, $updateDto);
-        $data = json_decode($request->getContent(), true);
-        $form->submit($data);
+        $form->submit(array_merge($request->request->all(), $request->files->all()));
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            try {
-                $product = $service->update($updateDto);
-                return $this->handleView($this->view($product, Response::HTTP_OK));
-            } catch (Exception $e) {
-                $this->logger->warning($e->getMessage(), ['exception' => $e]);
-                return $this->handleView(
-                    $this->view(['message' => $e->getMessage()], Response::HTTP_CONFLICT)
-                );
-            }
+        if (! $form->isSubmitted() || ! $form->isValid()) {
+            return $this->handleView($this->view($form->getErrors()));
         }
 
-        return $this->handleView($this->view($form->getErrors()));
+        try {
+            $paths = $this->uploader->upload($updateDto->photos);
+            $updateDto->photos = $paths;
+            $product = $service->update($updateDto);
+
+            return $this->handleView($this->view($product, Response::HTTP_OK));
+        } catch (Exception $e) {
+            $this->logger->warning($e->getMessage(), ['exception' => $e]);
+
+            return $this->handleView(
+                $this->view(['message' => $e->getMessage()], Response::HTTP_CONFLICT)
+            );
+        }
     }
 
 
@@ -314,7 +329,7 @@ class ProductsController extends AbstractFOSRestController
     public function delete(Request $request, DeleteService $service, string $sku)
     {
         try {
-            $service->delete($sku);
+            $service->delete($sku, $this->uploader->getTargetDirectory());
             return $this->handleView($this->view([], Response::HTTP_NO_CONTENT));
         } catch (Exception $e) {
             $this->logger->warning($e->getMessage(), ['exception' => $e]);

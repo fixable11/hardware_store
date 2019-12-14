@@ -6,6 +6,11 @@
 parameters:
 
 services:
+    imageUploader:
+        class: App\Service\FileUploader
+        arguments:
+            $targetDirectory: '%kernel.project_dir%/public/build/images'
+    
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
@@ -25,6 +30,10 @@ services:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
         
+    App\Controller\Api\ProductsController:
+        arguments:
+            App\Service\FileUploader: '@imageUploader'
+  
     App\Exception\HttpExceptionListener:
         tags:
             - { name: kernel.event_listener, event: kernel.exception }

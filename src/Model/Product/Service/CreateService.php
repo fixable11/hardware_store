@@ -44,7 +44,8 @@ class CreateService
         $product = new Product(
             empty($dto->sku) ? Sku::next() : new Sku($dto->sku),
             $dto->name,
-            $dto->description
+            $dto->description,
+            $dto->photos
         );
 
         $this->addProductDetail($product);
