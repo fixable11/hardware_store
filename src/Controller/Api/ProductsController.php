@@ -132,16 +132,18 @@ class ProductsController extends AbstractFOSRestController
      *
      * @Rest\Get("/products/{sku}", name=".products.show", methods={"GET"})
      *
-     * @param GetService $service Get products service.
-     * @param string     $sku     Product sku.
+     * @param GetService        $service Get products service.
+     * @param string            $sku     Product sku.
+     * @param ProductNormalizer $normalizer
      *
      * @return Response
+     * @throws ExceptionInterface
      */
-    public function show(GetService $service, string $sku)
+    public function show(GetService $service, string $sku, ProductNormalizer $normalizer)
     {
         try {
             $product = $service->getBySku($sku);
-            return $this->handleView($this->view($product, 200));
+            return $this->handleView($this->view($normalizer->normalizeOne($product), 200));
         } catch (Exception $e) {
             $this->logger->warning($e->getMessage(), ['exception' => $e]);
             return $this->handleView(

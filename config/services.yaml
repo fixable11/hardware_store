@@ -4,12 +4,12 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
-
+    images_directory: '%kernel.project_dir%/public/build/images'
 services:
     imageUploader:
         class: App\Service\FileUploader
         arguments:
-            $targetDirectory: '%kernel.project_dir%/public/build/images'
+            $targetDirectory: '%images_directory%'
     
     # default configuration for services in *this* file
     _defaults:
@@ -33,6 +33,10 @@ services:
     App\Controller\Api\ProductsController:
         arguments:
             App\Service\FileUploader: '@imageUploader'
+            
+    App\Model\Product\Service\ProductNormalizer:
+        arguments:
+            $imagesDirectory: '%images_directory%'
   
     App\Exception\HttpExceptionListener:
         tags:

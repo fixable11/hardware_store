@@ -21,6 +21,16 @@ use Symfony\Component\Serializer\Serializer;
 class ProductNormalizer implements NormalizerInterface
 {
     /**
+     * @var string
+     */
+    private $imagesDirectory;
+
+    public function __construct(string $imagesDirectory)
+    {
+        $this->imagesDirectory = $imagesDirectory;
+    }
+
+    /**
      * Serialize.
      *
      * @param Product[] $products Products array.
@@ -52,6 +62,18 @@ class ProductNormalizer implements NormalizerInterface
     }
 
     /**
+     * @param Product $product
+     *
+     * @return mixed
+     * @throws AnnotationException
+     * @throws ExceptionInterface
+     */
+    public function normalizeOne(Product $product)
+    {
+        return $this->normalize([$product])[0];
+    }
+
+    /**
      * Attributes that will be shown to the client
      *
      * @return array
@@ -77,6 +99,12 @@ class ProductNormalizer implements NormalizerInterface
                 },
                 'status' => function ($obj) {
                     return (string) $obj;
+                },
+                'photos' => function ($photos) {
+                    return array_map(function ($photo) {
+                        return preg_replace('/.*\/public/','', $this->imagesDirectory)
+                            . DIRECTORY_SEPARATOR . $photo;
+                    }, $photos);
                 },
             ],
         ];

@@ -29,6 +29,8 @@ class ProductDetail
     /**
      * @var string $version Product version.
      *
+     * @Groups("product")
+     *
      * @ORM\Id
      * @ORM\Column(type="string", name="version", length=20)
      */
@@ -36,6 +38,8 @@ class ProductDetail
 
     /**
      * @var string $material Material.
+     *
+     * @Groups("product")
      *
      * @ORM\Id
      * @ORM\Column(type="string", name="material")
@@ -45,12 +49,16 @@ class ProductDetail
     /**
      * @var integer $quantity Quantity.
      *
+     * @Groups("product")
+     *
      * @ORM\Column(type="integer", name="quantity", options={"unsigned"=true})
      */
     private $quantity;
 
     /**
      * @var string $price Price.
+     *
+     * @Groups("product")
      *
      * @ORM\Column(type="string", name="price")
      */
@@ -59,6 +67,8 @@ class ProductDetail
     /**
      * @var string $color color.
      *
+     * @Groups("product")
+     *
      * @ORM\Id
      * @ORM\Column(type="string", name="color")
      */
@@ -66,6 +76,8 @@ class ProductDetail
 
     /**
      * @var string $specification Specification.
+     *
+     * @Groups("product")
      *
      * @ORM\Column(type="text", name="specification")
      */
@@ -98,5 +110,53 @@ class ProductDetail
         $this->specification = $specification;
         $this->price = $price;
         $this->material = $material;
+    }
+
+    /**
+     * @return string
+     */
+    public function getColor(): string
+    {
+        return $this->color;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMaterial(): string
+    {
+        return $this->material;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPrice(): string
+    {
+        return $this->price;
+    }
+
+    /**
+     * @return int
+     */
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSpecification(): string
+    {
+        return $this->specification;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return $this->version;
     }
 }

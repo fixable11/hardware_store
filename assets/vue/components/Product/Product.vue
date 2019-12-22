@@ -6,27 +6,23 @@
                 <div class="col-12 breadcrumb">
                     <div class="breadcrumb__page">Home</div>
                     <div class="breadcrumb__page">Breadcrumb</div>
-                    <div class="breadcrumb__page breadcrumb__page-current">Brandix Screwdriver SCREW1500ACC</div>
+                    <div class="breadcrumb__page breadcrumb__page-current">{{ product.name }}</div>
                 </div>
 
                 <div class="col-12 col-md-6 product__galery">
                     <div class="row product__galery__slider">
-                        <div class="item"><img :src="require('../../assets/images/products/product-16.jpg')" alt=""></div>
-                        <div class="item"><img :src="require('../../assets/images/products/product-16-1.jpg')"  alt=""></div>
-                        <div class="item"><img :src="require('../../assets/images/products/product-16-2.jpg')"  alt=""></div>
-                        <div class="item"><img :src="require('../../assets/images/products/product-16-3.jpg')"  alt=""></div>
-                        <div class="item"><img :src="require('../../assets/images/products/product-16-4.jpg')"  alt=""></div>
+                        <div class="item" v-for="photo in product.photos">
+                            <img :src="photo" alt="">
+                        </div>
                     </div>
                     <div class="row product__galery__buttons">
-                        <div class="col item"><img :src="require('../../assets/images/products/product-16.jpg')"  alt=""></div>
-                        <div class="col item"><img :src="require('../../assets/images/products/product-16-1.jpg')"  alt=""></div>
-                        <div class="col item"><img :src="require('../../assets/images/products/product-16-2.jpg')"  alt=""></div>
-                        <div class="col item"><img :src="require('../../assets/images/products/product-16-3.jpg')"  alt=""></div>
-                        <div class="col item"><img :src="require('../../assets/images/products/product-16-4.jpg')"  alt=""></div>
+                        <div class="col item" v-for="photo in product.photos">
+                            <img :src="photo" alt="">
+                        </div>
                     </div>
                 </div>
                 <div class="col-12 col-md-6 product__chars">
-                    <div class="product__chars__name">Brandix Screwdriver SCREW1500ACC</div>
+                    <div class="product__chars__name">{{ product.name }}</div>
                     <div class="product__chars__reviews">
                         <div class="stars">
                             <i class="fas fa-star"></i>
@@ -39,7 +35,7 @@
                             <a href="#">7 Reviews</a> / <a href="#">Write A Review</a>
                         </div>
                     </div>
-                    <div class="product__chars__desc">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur ornare, mi in ornare elementum, libero nibh lacinia urna, quis convallis lorem erat at purus. Maecenas eu varius nisi.</div>
+                    <div class="product__chars__desc">{{ product.description }}</div>
                     <div class="product__chars__status">
                         <div class="stock">
                             <span>Availability:</span>
@@ -60,28 +56,24 @@
                     </div>
                     <div class="product__chars__colors">
                         <div class="title">Color</div>
-                        <div class="color white" style="background-color: #fff;">
+                        <div
+                            class="color"
+                            :style="{backgroundColor: detail.color}"
+                            v-for="detail in product.productDetail"
+                            @click="$event.target.classList.toggle('active')"
+                        >
                             <div class="color-active"></div>
                             <div class="color-active" style="background-color: #fff;"></div>
                         </div>
-                        <div class="color yellow" style="background-color: #ffd333;">
-                            <div class="color-active"></div>
-                            <div class="color-active" style="background-color: #ffd333;"></div>
-                        </div>
-                        <div class="color red" style="background-color: #FF2626;">
-                            <div class="color-active"></div>
-                            <div class="color-active" style="background-color: #FF2626;"></div>
-                        </div>
-                        <div class="color green disabled" style="background-color: #28a745;">
+                        <div class="d-none color green disabled" style="background-color: #28a745;">
                             <div class="color-active"></div>
                             <div class="color-active" style="background-color: #28a745;"></div>
                         </div>
                     </div>
                     <div class="product__chars__materials">
                         <div class="title">Material</div>
-                        <div class="material metal">Metal</div>
-                        <div class="material wood">Wood</div>
-                        <div class="material plastic disabled">Plastic</div>
+                        <div class="material">Metal</div>
+                        <div class="d-none material plastic disabled">Plastic</div>
                     </div>
                     <div class="product__chars__actions">
                         <div class="title">Quantity</div>
@@ -263,45 +255,60 @@
         inject: ['productsRepository'],
         data() {
             return {
-
+                product: {
+                    description: '',
+                    name: '',
+                    photos: [],
+                    productDetail: [{
+                        version: '',
+                        material: '',
+                        quantity: '',
+                        price: '',
+                        color: '',
+                        specification: '',
+                    }],
+                    sku: '',
+                    status: '',
+                }
             }
         },
         async mounted() {
             let sku = this.$route.params.sku;
-
-
-            let {data} = await this.productsRepository.getProduct(sku).catch(err => {
+            let {data: product} = await this.productsRepository.getProduct(sku).catch(err => {
                 this.$router.push('/404')
             });
 
-            let products = [...data];
+            this.product = product;
+            setTimeout(() => this.makeSlider(), 1000);
+        },
+        methods: {
+            makeSlider() {
+                $('.product .product__galery__slider').slick({
+                    slidesToShow: 1,
+                    slidesToScroll: 1,
+                    dots: false,
+                    arrows: false,
+                    asNavFor: $('.product .product__galery__buttons')
+                });
 
-
-            $('.product .product__galery__slider').slick({
-                slidesToShow: 1,
-                slidesToScroll: 1,
-                dots: false,
-                arrows: false,
-                asNavFor: $('.product .product__galery__buttons')
-            });
-
-            $('.product .product__galery__buttons').slick({
-                slidesToShow: 5,
-                slidesToScroll: 1,
-                dots: false,
-                arrows: false,
-                asNavFor: $('.product .product__galery__slider'),
-                focusOnSelect: true,
-                //centerMode: true
-                responsive: [
-                    {
-                        breakpoint: 992,
-                        settings: {
-                            slidesToShow: 3,
+                $('.product .product__galery__buttons').slick({
+                    slidesToShow: 5,
+                    slidesToScroll: 1,
+                    dots: false,
+                    arrows: false,
+                    asNavFor: $('.product .product__galery__slider'),
+                    focusOnSelect: true,
+                    //centerMode: true
+                    responsive: [
+                        {
+                            breakpoint: 992,
+                            settings: {
+                                slidesToShow: 3,
+                            }
                         }
-                    }
-                ]
-            });
+                    ]
+                });
+            }
         }
     }
 </script>

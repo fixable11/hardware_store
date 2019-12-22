@@ -77,6 +77,8 @@ class Product
     /**
      * @var Collection $productDetail ProductDetail.
      *
+     * @Groups("product")
+     *
      * @ORM\OneToMany(targetEntity="ProductDetail", mappedBy="product", cascade={"persist", "remove"},
      *     orphanRemoval=true)
      */
