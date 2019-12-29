@@ -83,7 +83,7 @@
                                 <div class="quantity__button quantity__buttonUp">+</div>
                                 <div class="quantity__button quantity__buttonDown">-</div>
                             </div>
-                            <button class="addToCart">Add To Cart</button>
+                            <button @click="addProductToStore(product)" class="addToCart">Add To Cart</button>
                             <button class="like"><i class="fas fa-heart"></i></button>
                             <button class="stats"><i class="fas fa-chart-bar"></i></button>
                         </div>
@@ -249,6 +249,7 @@
 <script>
     import $ from "jquery";
     import "slick-carousel";
+    import { mapState, mapGetters, mapActions, mapMutations } from 'vuex';
 
     export default {
         name: "Product",
@@ -281,7 +282,11 @@
             this.product = product;
             setTimeout(() => this.makeSlider(), 1000);
         },
+        computed: {
+            ...mapGetters(['getProducts']),
+        },
         methods: {
+            ...mapMutations(['addProduct', 'removeProduct']),
             makeSlider() {
                 $('.product .product__galery__slider').slick({
                     slidesToShow: 1,
@@ -308,6 +313,9 @@
                         }
                     ]
                 });
+            },
+            addProductToStore(product) {
+                this.addProduct(product);
             }
         }
     }

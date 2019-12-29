@@ -1,22 +1,17 @@
 <template>
-    <div class="site__body d-flex justify-content-center mt-5 mb-5">
-        <div class="block">
-            <div class="container">
-                <div class="not-found">
-                    <div class="not-found__404">Oops! Error 404</div>
-                    <div class="not-found__content"><h1 class="not-found__title">Page Not Found</h1>
-                        <p class="not-found__text">We can't seem to find the page you're looking for.<br>Try to use the
-                            search.</p>
-                        <form class="not-found__search"><input type="text" class="not-found__search-input form-control"
-                                                               placeholder="Search Query...">
-                            <button type="submit" class="not-found__search-button btn btn-primary">Search</button>
-                        </form>
-                        <p class="not-found__text">Or go to the home page to start over.</p><a
-                            class="btn btn-secondary btn-sm" href="index.html">Go To Home Page</a></div>
-                </div>
-            </div>
+    <section class="pageNotFound">
+        <div class="container">
+            <span>Oops! Error 404</span>
+            <h2 class="title">Page Not Found</h2>
+            <p>We can't seem to find the page you're looking for.<br>Try to use the search</p>
+            <form action="search">
+                <input type="text" placeholder="Search Query...">
+                <input type="button" value="Search" class="button">
+            </form>
+            <p>Or go to the home page to start over</p>
+            <div class="goHome button"><a href="index.html">Go To Home Page</a></div>
         </div>
-    </div>
+    </section>
 </template>
 
 <script>
@@ -25,6 +20,63 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+    @import "../assets/scss/vars";
+
+    .pageNotFound {
+        padding: 7vh 0;
+        text-align: center;
+        font-size: 1rem;
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .title {
+            font-size: 2.3rem;
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        input {
+            margin-top: 5px;
+            border-radius: 2px;
+            &[type=text] {
+                padding: 7px 15px;
+                min-width: 25vw;
+                border: 1px solid #ebebeb;
+                &::placeholder {
+                    color: #b3b3b3
+                }
+            }
+            &[type=button] {
+                font-weight: 500;
+                padding: 7px 25px;
+                margin-left: 15px;
+                background-color: $accent;
+                border: none;
+            }
+        }
+        p {
+            margin-bottom: 0;
+            padding: 30px 0;
+        }
+        span {
+            font-size: 6vw;
+            font-weight: 700;
+            color: #ebebeb;
+        }
+        .goHome {
+            padding: 5px 15px;
+            font-size: .95rem;
+            font-weight: 500;
+            background-color: #ebebeb;
+        }
+    }
 
 </style>

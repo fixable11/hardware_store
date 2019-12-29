@@ -200,8 +200,8 @@
                         <div class="favorites"><i class="far fa-heart"></i>
                             <div class="favorites__count">2</div>
                         </div>
-                        <div class="cart"><i class="fas fa-shopping-cart"></i>
-                            <div class="cart__count">7</div>
+                        <div @click="$router.push('/cart')" class="cart"><i class="fas fa-shopping-cart"></i>
+                            <div class="cart__count">{{ getProductsCount }}</div>
                         </div>
                         <div class="account"><i class="far fa-user"></i></div>
                     </div>
@@ -438,12 +438,13 @@
 </template>
 
 <script>
+    import {mapGetters} from 'vuex';
 
     export default {
         name: "Header",
         data() {
             return {
-                showMenu: true,
+                showMenu: false,
             }
         },
 
@@ -451,6 +452,9 @@
             toggleMenu() {
                 this.showMenu = !this.showMenu
             }
+        },
+        computed: {
+            ...mapGetters(['getProductsCount']),
         }
     };
 </script>
