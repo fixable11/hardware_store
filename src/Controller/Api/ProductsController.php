@@ -19,6 +19,7 @@ use App\Service\FileUploader;
 use Exception;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,6 +30,8 @@ use Nelmio\ApiDocBundle\Annotation\Security;
 use App\Model\Product\Entity\Product;
 use Swagger\Annotations as SWG;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
+use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * Class UsersController
@@ -46,10 +49,21 @@ class ProductsController extends AbstractFOSRestController
      * @var PaginatorNormalizer $paginatorNormalizer Paginator normalizer.
      */
     private $paginatorNormalizer;
+
     /**
-     * @var FileUploader
+     * @var FileUploader $uploader FileUploader.
      */
     private $uploader;
+
+    /**
+     * @var SerializerInterface $serializer Serializer.
+     */
+    private $serializer;
+
+    /**
+     * @var ValidatorInterface
+     */
+    private $validator;
 
     /**
      * ProductsController constructor.
@@ -57,15 +71,21 @@ class ProductsController extends AbstractFOSRestController
      * @param LoggerInterface     $logger              Logger.
      * @param PaginatorNormalizer $paginatorNormalizer Paginator normalizer.
      * @param FileUploader        $uploader
+     * @param SerializerInterface $serializer
+     * @param ValidatorInterface  $validator
      */
     public function __construct(
         LoggerInterface $logger,
         PaginatorNormalizer $paginatorNormalizer,
-        FileUploader $uploader
+        FileUploader $uploader,
+        SerializerInterface $serializer,
+        ValidatorInterface $validator
     ) {
         $this->logger = $logger;
         $this->paginatorNormalizer = $paginatorNormalizer;
         $this->uploader = $uploader;
+        $this->serializer = $serializer;
+        $this->validator = $validator;
     }
 
     /**
@@ -138,18 +158,13 @@ class ProductsController extends AbstractFOSRestController
      *
      * @return Response
      * @throws ExceptionInterface
+     * @throws \Doctrine\Common\Annotations\AnnotationException
      */
     public function show(GetService $service, string $sku, ProductNormalizer $normalizer)
     {
-        try {
-            $product = $service->getBySku($sku);
-            return $this->handleView($this->view($normalizer->normalizeOne($product), 200));
-        } catch (Exception $e) {
-            $this->logger->warning($e->getMessage(), ['exception' => $e]);
-            return $this->handleView(
-                $this->view(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND)
-            );
-        }
+        $product = $service->getBySku($sku);
+
+        return $this->handleView($this->view($normalizer->normalizeOne($product), 200));
     }
 
     /**
@@ -196,30 +211,29 @@ class ProductsController extends AbstractFOSRestController
      * @param CreateService $service Create service.
      *
      * @return Response
+     *
+     * @throws Exception
      */
     public function create(Request $request, CreateService $service)
     {
-        $createDto = new CreateDto();
-        $form = $this->createForm(CreateForm::class, $createDto);
-        $form->submit(array_merge($request->request->all(), $request->files->all()));
+        /** @var CreateDto $createDto */
+        $createDto = $this->serializer->deserialize($request->getContent(), CreateDto::class, 'json');
 
-        if (! $form->isSubmitted() || ! $form->isValid()) {
-            return $this->handleView($this->view($form->getErrors()));
+        $violations = $this->validator->validate($createDto);
+
+        if (count($violations)) {
+            $json = $this->serializer->serialize($violations, 'json');
+            return new JsonResponse($json, 400, [], true);
         }
 
-        try {
+        if (! empty($createDto->photos)) {
             $paths = $this->uploader->upload($createDto->photos);
             $createDto->photos = $paths;
-            $product = $service->create($createDto);
-
-            return $this->handleView($this->view($product, Response::HTTP_CREATED));
-        } catch (Exception $e) {
-            $this->logger->warning($e->getMessage(), ['exception' => $e]);
-
-            return $this->handleView(
-                $this->view(['message' => $e->getMessage()], Response::HTTP_CONFLICT)
-            );
         }
+
+        $product = $service->create($createDto);
+
+        return $this->handleView($this->view($product, Response::HTTP_CREATED));
     }
 
 
@@ -272,27 +286,27 @@ class ProductsController extends AbstractFOSRestController
      */
     public function edit(Request $request, UpdateService $service, string $sku)
     {
-        $updateDto = new UpdateDto($sku);
-        $form = $this->createForm(UpdateForm::class, $updateDto);
-        $form->submit(array_merge($request->request->all(), $request->files->all()));
+        $json = json_encode($request->request->all());
+        /** @var UpdateDto $updateDto */
+        $updateDto = $this->serializer->deserialize($json, UpdateDto::class, 'json');
+        $updateDto->sku = $sku;
+        $updateDto->photos = $request->files->get('photos');
 
-        if (! $form->isSubmitted() || ! $form->isValid()) {
-            return $this->handleView($this->view($form->getErrors()));
+        $violations = $this->validator->validate($updateDto);
+
+        if (count($violations)) {
+            $json = $this->serializer->serialize($violations, 'json');
+            return new JsonResponse($json, 400, [], true);
         }
 
-        try {
+        if (! empty($updateDto->photos)) {
             $paths = $this->uploader->upload($updateDto->photos);
             $updateDto->photos = $paths;
-            $product = $service->update($updateDto);
-
-            return $this->handleView($this->view($product, Response::HTTP_OK));
-        } catch (Exception $e) {
-            $this->logger->warning($e->getMessage(), ['exception' => $e]);
-
-            return $this->handleView(
-                $this->view(['message' => $e->getMessage()], Response::HTTP_CONFLICT)
-            );
         }
+
+        $product = $service->update($updateDto);
+
+        return $this->handleView($this->view($product, Response::HTTP_OK));
     }
 
 
@@ -330,14 +344,8 @@ class ProductsController extends AbstractFOSRestController
      */
     public function delete(Request $request, DeleteService $service, string $sku)
     {
-        try {
-            $service->delete($sku, $this->uploader->getTargetDirectory());
-            return $this->handleView($this->view([], Response::HTTP_NO_CONTENT));
-        } catch (Exception $e) {
-            $this->logger->warning($e->getMessage(), ['exception' => $e]);
-            return $this->handleView(
-                $this->view(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND)
-            );
-        }
+        $service->delete($sku, $this->uploader->getTargetDirectory());
+
+        return $this->handleView($this->view([], Response::HTTP_NO_CONTENT));
     }
 }

@@ -59,7 +59,7 @@ class UpdateDto
      *
      * @param string $sku Product sku.
      */
-    public function __construct(string $sku)
+    public function __construct(string $sku = '')
     {
         $this->sku = $sku;
     }

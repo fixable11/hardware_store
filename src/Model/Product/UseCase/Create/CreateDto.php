@@ -31,8 +31,7 @@ class CreateDto
      * @var array $photos Photos.
      *
      * @Assert\All({
-     *     @Assert\Image,
-     *     @Assert\NotBlank()
+     *     @Assert\Type(type="string")
      * })
      */
     public $photos = [];
