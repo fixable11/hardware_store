@@ -5,7 +5,9 @@
                 <div class="row d-none d-lg-flex">
                     <div class="col-md-6 secondaryHeader__leftSide">
                         <div class="items">
-                            <div class="item"><a href="#">About Us</a></div>
+                            <div class="item">
+                                <router-link :to="{ name: 'aboutUs'}">About Us</router-link>
+                            </div>
                             <div class="item"><a href="#">Contacts</a></div>
                             <div class="item"><a href="#">Store Location</a></div>
                             <div class="item"><a href="#">Track Order</a></div>
@@ -182,7 +184,7 @@
                         <div class="item withSub">
                             <div class="item__title">Pages <i class="fas fa-angle-down"></i></div>
                             <div class="item__subMenu">
-                                <a href="#" class="category">AboutUs</a>
+                                <a :href="$route.path" @click="$router.push({name: 'aboutUs'})" class="category">AboutUs</a>
                                 <a href="#" class="category">Contact Us</a>
                                 <a href="#" class="category">Contact Us Alt</a>
                                 <a href="#" class="category">404</a>

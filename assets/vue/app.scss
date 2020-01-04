@@ -10,6 +10,9 @@ $slick-loader-path: "~slick-carousel/slick/";
 @import "./assets/scss/vars";
 @import "./assets/scss/media";
 
+* {
+    box-sizing: border-box;
+}
 
 
 //ul, li {
